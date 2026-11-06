@@ -49,3 +49,4 @@ jobs:
       - run: cargo test -p launcher-core --locked
       - run: cargo clippy -p launcher-core --all-targets --locked -- -D warnings
       - run: cargo check -p struct-launcher --locked
+      - run: cargo test -p struct-launcher --locked

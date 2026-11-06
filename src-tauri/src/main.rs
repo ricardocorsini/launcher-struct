@@ -268,3 +268,16 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("Não foi possível iniciar o Struct Launcher");
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn updater_can_initialize_before_release_publishing_is_configured() {
+        let document: serde_json::Value =
+            serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
+        let config: tauri_plugin_updater::Config =
+            serde_json::from_value(document["plugins"]["updater"].clone()).unwrap();
+        assert!(config.pubkey.is_empty());
+        assert!(config.endpoints.is_empty());
+    }
+}

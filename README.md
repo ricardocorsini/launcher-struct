@@ -91,6 +91,7 @@ npm run build           # Build web de produção
 npm run format:check    # Formatação JS/TS/JSON/Markdown/YAML
 cargo fmt --all --check
 cargo test -p launcher-core --locked
+cargo test -p struct-launcher --locked # Requer as bibliotecas desktop
 cargo clippy -p launcher-core --all-targets --locked -- -D warnings
 ```
 

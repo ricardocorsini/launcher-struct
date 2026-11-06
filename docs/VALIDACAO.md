@@ -8,6 +8,7 @@
 | Testes de domínio da interface                                   | 8 aprovados                                                              |
 | Testes Node de assinatura e catálogo                             | 4 aprovados                                                              |
 | Testes Rust do núcleo no Linux                                   | 17 aprovados                                                             |
+| Teste de configuração inicial do updater Tauri                   | 1 aprovado; inicialização de configuração sem endpoint publicado         |
 | Testes Playwright/Chromium da interface                          | 7 aprovados                                                              |
 | Formatação Prettier e rustfmt                                    | Conferida                                                                |
 | Clippy do núcleo, com warnings tratados como erro                | Aprovado                                                                 |
@@ -26,7 +27,7 @@ As imagens em `docs/assets/` são capturas reais da interface de prévia no nave
 ## Limites desta verificação
 
 - A sessão de desenvolvimento não executou um instalador NSIS em um Windows real. O workflow de CI inclui compilação e testes nativos Windows; o workflow manual gera os instaladores para validação nessa plataforma.
-- O executável Tauri foi compilado no Linux. Isso não substitui uma sessão gráfica de uso nativo, a geração/instalação do AppImage ou os testes nas distribuições que serão declaradas suportadas.
+- O executável Tauri foi compilado no Linux. Um teste nativo adicional desserializa a configuração real do plugin updater, incluindo o estado inicial sem endpoint de distribuição. Isso não substitui uma sessão gráfica de uso nativo, a geração/instalação do AppImage ou os testes nas distribuições que serão declaradas suportadas.
 - ConsoloStruct e MolaStruct ainda não têm pacotes publicados no catálogo desta entrega. Instalar e atualizar esses produtos reais de ponta a ponta depende da publicação e assinatura posterior desses pacotes.
 - A atualização assinada do próprio launcher depende de chave e endpoint ainda não configurados; nenhum reinício por atualização real foi executado.
 - Os testes do launcher não validam os motores de cálculo de engenharia dos aplicativos.
