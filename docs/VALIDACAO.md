@@ -6,11 +6,16 @@
 | ----------------------------------------------- | ------------------- |
 | TypeScript e build Vite                         | Aprovados           |
 | Vitest: domínio e coordenação das consultas     | 12 testes aprovados |
-| Node: assinaturas, releases, catálogo e versão  | 14 testes aprovados |
+| Node: assinaturas, releases, catálogo e versão  | 22 testes aprovados |
 | Rust: núcleo e migração para o catálogo oficial | 18 testes aprovados |
 | Playwright/Chromium                             | 8 testes aprovados  |
 | Clippy do núcleo com `-D warnings`              | Aprovado            |
 | Prettier e rustfmt                              | Conferidos          |
+
+O inicializador tem oito testes de regressão adicionais: hubs em `main`, `master` e branch com
+barra, criação de hub, primeiro commit, metadados atrasados após renomeação, permissões,
+renderização do workflow e referência do commit. A configuração preserva a branch existente
+e a usa nos endpoints de catálogo e updater.
 
 O teste novo da interface usa uma ponte nativa substituída apenas no ambiente de teste:
 confere a consulta ao abrir, o aviso de atualização de aplicativo e do launcher, a nova
@@ -29,8 +34,8 @@ O teste Rust de migração abre um estado de instalação antiga sem URL, aplica
 oficial e preserva preferências e uma URL personalizada existente. Desligar a opção de
 verificação automática continua sendo respeitado.
 
-**Limites desta entrega:** o inicializador foi revisado e seus comandos/formatos conferidos,
-mas não foi executado contra a conta real para criar hub, Secrets, tags ou releases. Não há
+**Limites desta entrega:** a ativação completa na conta real, com Secrets, tags e releases,
+ainda precisa ser concluída. Os testes do inicializador usam respostas GitHub controladas. Não há
 chaves de produção nesta sessão. O fluxo real GitHub Actions → instaladores Windows/Linux →
 atualização em computadores precisa ser executado após a ativação descrita em RELEASES.md.
 A versão 0.2 foi verificada no núcleo Rust e no build da interface; o build nativo completo

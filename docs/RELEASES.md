@@ -51,6 +51,8 @@ Se você já possui esse checkout, use `git pull --ff-only` nele antes de `npm c
 novamente. A autenticação precisa de acesso de administrador aos repositórios para gravar
 Secrets e de permissão para atualizar workflows. O comando `--create-public` autoriza criar
 **somente o novo hub** como público; não altera a visibilidade de repositórios existentes.
+A branch existente do hub (`main`, `master` ou outro nome) é detectada e mantida. A configuração
+gravada em `distribution.json` usa essa mesma branch nos endpoints, commits e workflows.
 
 O inicializador:
 
@@ -175,16 +177,16 @@ Para antecipar, execute o workflow de catálogo e depois o botão de verificaç�
 O catálogo usa a URL pública:
 
 ```text
-https://raw.githubusercontent.com/ricardocorsini/openstruct-catalog/main/catalog.signed.json
+https://raw.githubusercontent.com/ricardocorsini/openstruct-catalog/<branch-do-hub>/catalog.signed.json
 ```
 
 O feed de atualização do próprio launcher usa:
 
 ```text
-https://raw.githubusercontent.com/ricardocorsini/openstruct-catalog/main/launcher/latest.json
+https://raw.githubusercontent.com/ricardocorsini/openstruct-catalog/<branch-do-hub>/launcher/latest.json
 ```
 
-O primeiro existe após a configuração; o segundo é criado após a primeira release estável do
+Substitua `<branch-do-hub>` pelo nome mostrado pelo inicializador. O primeiro endpoint existe após a configuração; o segundo é criado após a primeira release estável do
 launcher e a sincronização do hub. `v0.4.0-beta.1` gera um pré-lançamento de aplicativo, oferecido
 somente a quem seleciona o canal beta. O updater do próprio launcher, nesta etapa, oferece
 somente versões estáveis.
@@ -200,7 +202,7 @@ o novo catálogo. O launcher mantém o último catálogo verificado. Ele não in
 3. Na aba Actions do hub, confira Synchronize signed catalog. Se necessário:
 
    ```sh
-   gh workflow run catalog.yml --repo ricardocorsini/openstruct-catalog --ref main
+   gh workflow run catalog.yml --repo ricardocorsini/openstruct-catalog
    gh run list --repo ricardocorsini/openstruct-catalog --limit 5
    ```
 

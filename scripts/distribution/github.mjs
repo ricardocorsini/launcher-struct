@@ -28,20 +28,24 @@ export const api = (path, method = 'GET', body) => {
   return result ? JSON.parse(result) : null;
 };
 
-export function putFiles(repo, branch, files, message) {
-  const head = api(`repos/${repo}/git/ref/heads/${branch}`).object.sha;
-  const parent = api(`repos/${repo}/git/commits/${head}`);
-  const tree = api(`repos/${repo}/git/trees`, 'POST', {
+export function putFiles(repo, branch, files, message, request = api) {
+  const encodedBranch = encodeURIComponent(branch);
+  const head = request(`repos/${repo}/git/ref/heads/${encodedBranch}`).object.sha;
+  const parent = request(`repos/${repo}/git/commits/${head}`);
+  const tree = request(`repos/${repo}/git/trees`, 'POST', {
     base_tree: parent.tree.sha,
     tree: files.map(({ path, content }) => ({ path, content, type: 'blob', mode: '100644' })),
   });
   if (tree.sha === parent.tree.sha) return head;
-  const commit = api(`repos/${repo}/git/commits`, 'POST', {
+  const commit = request(`repos/${repo}/git/commits`, 'POST', {
     message,
     tree: tree.sha,
     parents: [head],
   });
-  api(`repos/${repo}/git/refs/heads/${branch}`, 'PATCH', { sha: commit.sha, force: false });
+  request(`repos/${repo}/git/refs/heads/${encodedBranch}`, 'PATCH', {
+    sha: commit.sha,
+    force: false,
+  });
   return commit.sha;
 }
 

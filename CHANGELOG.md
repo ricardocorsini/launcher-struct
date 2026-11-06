@@ -2,6 +2,8 @@
 
 ## 0.2.0
 
+- Correção do inicializador: preserva a branch padrão do hub e usa seu nome nos endpoints e workflows. Remove a dependência de renomeação assíncrona de `master` para `main`.
+
 - Infraestrutura GitHub Releases: hub público separado, workflows reutilizáveis e configuração pelo GitHub CLI.
 - Builds NSIS/AppImage e publicação conjunta após validação dos dois sistemas.
 - Metadados de release assinados, SHA-256 e vínculo entre produto, tag e arquivos publicados.

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { versionFromTag } from './release-lib.mjs';
+import { distributionEndpoints, versionFromTag } from './release-lib.mjs';
 
 const config = JSON.parse(
   await readFile(new URL('../../distribution.json', import.meta.url), 'utf8'),
@@ -20,10 +20,7 @@ if (product.id === 'launcher') {
     'true',
     'Configure TAURI_SIGNING_PRIVATE_KEY antes de publicar o launcher.',
   );
-  assert.equal(
-    process.env.STRUCT_LAUNCHER_UPDATE_URL,
-    `https://raw.githubusercontent.com/${config.hubRepo}/main/launcher/latest.json`,
-  );
+  assert.equal(process.env.STRUCT_LAUNCHER_UPDATE_URL, distributionEndpoints(config).updateUrl);
   assert.equal(process.env.STRUCT_LAUNCHER_UPDATE_PUBKEY, config.tauriPublicKey);
 }
 console.log('Pré-requisitos da publicação verificados.');

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { putFiles } from './github.mjs';
+import { distributionBranch } from './release-lib.mjs';
 
 const config = JSON.parse(await readFile('distribution.json', 'utf8'));
 if (process.env.GITHUB_REPOSITORY !== config.hubRepo)
@@ -12,4 +13,9 @@ for (const path of ['catalog.signed.json', 'launcher/latest.json']) {
     if (error.code !== 'ENOENT') throw error;
   }
 }
-putFiles(config.hubRepo, 'main', files, 'chore: update verified OpenStruct releases');
+putFiles(
+  config.hubRepo,
+  distributionBranch(config),
+  files,
+  'chore: update verified OpenStruct releases',
+);

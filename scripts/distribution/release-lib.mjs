@@ -22,6 +22,20 @@ export function versionFromTag(tag) {
 export const releaseTag = (id, tag) => (id === 'launcher' ? `launcher-${tag}` : tag);
 export const channelFor = (version) => (prerelease(version) ? 'beta' : 'stable');
 
+export function distributionBranch(config) {
+  const branch = config.hubBranch ?? 'main'; // compatibility with already configured hubs
+  assert.ok(
+    typeof branch === 'string' && branch.length > 0 && !/[\s\u0000-\u001f]/.test(branch),
+    'Branch de distribuição inválida',
+  );
+  return branch;
+}
+
+export function distributionEndpoints(config) {
+  const base = `https://raw.githubusercontent.com/${config.hubRepo}/${encodeURIComponent(distributionBranch(config))}`;
+  return { catalogUrl: `${base}/catalog.signed.json`, updateUrl: `${base}/launcher/latest.json` };
+}
+
 export function tauriReleaseConfig(productId, updateUrl, publicKey) {
   if (productId === 'launcher') {
     assert.ok(
