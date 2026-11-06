@@ -4,7 +4,7 @@
 
 - Corrige o teste de sincronização do catálogo no Windows: o módulo de preparação passado a `node --import` usa uma URL `file://`, com codificação de espaços, acentos e `#`.
 - Inclui os testes JavaScript no CI Windows antes da compilação nativa, além dos checks executados durante a publicação.
-- Prepara uma nova publicação do launcher sem modificar a tag `v0.2.0` da tentativa anterior.
+- Primeira release pública do launcher: `0.2.1`, com instaladores NSIS/AppImage, manifesto assinado, SHA-256 e feed oficial. A tag `v0.2.0` da tentativa anterior foi preservada.
 
 ## 0.2.0
 

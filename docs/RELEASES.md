@@ -6,7 +6,7 @@
 - O catálogo oficial já inclui essa versão; as assinaturas e os hashes dos dois downloads foram conferidos.
 - ConsoloStruct 0.6.0 conectado à mesma esteira. Seu código já foi enviado durante esta integração. A tag não foi criada porque o mantenedor ainda está revisando a primeira versão.
 - As chaves públicas de produção estão configuradas. As chaves privadas permanecem nos Secrets e no backup do mantenedor.
-- A primeira publicação dos binários do próprio launcher é uma etapa separada, descrita abaixo.
+- [Struct Launcher 0.2.1 publicado](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.1), com Windows/Linux e feed oficial. A tentativa `v0.2.0` foi preservada; a correção de importação ESM no teste Windows entrou na `v0.2.1`.
 
 ## O processo adotado
 
@@ -193,7 +193,7 @@ O launcher segue o mesmo comando de versão e o mesmo workflow, mas os arquivos 
 com tags `launcher-v0.2.0`, `launcher-v0.2.1` etc. Os fontes continuam com tags `v0.2.0`,
 `v0.2.1` no repositório do launcher.
 
-Após a configuração inicial, uma primeira tag `v0.2.0` pode publicar o estado desta versão.
+A primeira publicação concluída é `v0.2.1`, no commit `61676c888b21c619343e3957e50d9a10a8f18b69`. A tag `v0.2.0` continua apontando para o código da tentativa anterior e não deve ser movida.
 Baixe e instale o primeiro NSIS/AppImage manualmente pelo hub. As próximas versões estáveis
 aparecerão no aviso **Atualizar e reiniciar**. Instalações antigas sem a chave e o endpoint
 precisam dessa primeira instalação manual. O binário precisa ter sido compilado com as
@@ -263,7 +263,7 @@ mais recentes de cada app. Revise a política antes de ultrapassar 500 releases 
 ## Etapas que permanecem para o mantenedor
 
 - Preservar o backup das chaves de produção já cadastradas.
-- Conferir o Secret do token limitado ao hub antes de publicar o launcher privado.
+- Manter válido o Secret do token limitado ao hub e renová-lo antes do vencimento escolhido.
 - Publicar o ConsoloStruct quando seus ajustes estiverem revisados.
 - Validar instalação, abertura, remoção e preservação de projetos nos dois sistemas. Uma
   atualização entre versões reais só poderá ser testada após existir uma segunda release.

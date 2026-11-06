@@ -1,5 +1,15 @@
 # Validação do Struct Launcher
 
+## v0.2.1 — correção Windows e primeira release pública (06/11/2026)
+
+O teste de sincronização usa `pathToFileURL(mockPath).href` em `node --import`. O diretório de teste contém espaços, acento e `#`, exercitando também a codificação da URL. O CI Windows agora executa os testes JavaScript antes da compilação nativa. Os 33 testes Node passaram no Windows e no Linux; o CI Windows passou também nos testes Rust e na inicialização da configuração Tauri.
+
+A [publicação 42271311293](https://github.com/ricardocorsini/launcher-struct/actions/runs/42271311293) concluiu os builds Windows/Linux e publicou a [release 0.2.1](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.1). A fonte é o commit `61676c888b21c619343e3957e50d9a10a8f18b69`; a tag anterior permanece imutável.
+
+Os dois downloads reais foram conferidos: tamanho, SHA-256, assinaturas Ed25519 dos pacotes e manifesto, correspondência com SHA256SUMS.txt e vínculo das URLs/assinaturas Tauri com o feed oficial. O leitor real do frontend retornou `ready` com a versão 0.2.1. No navegador, a página pública apresentou os dois botões com os endereços corretos.
+
+A instalação gráfica em Windows e uma atualização entre duas versões públicas reais ainda precisam de validação em computadores de destino.
+
 ## v0.2.0 — publicação e detecção de versões (06/11/2026)
 
 | Verificação                                     | Resultado           |
@@ -87,7 +97,7 @@ As imagens em `docs/assets/` são capturas reais da interface de prévia no nave
 - A sessão de desenvolvimento não executou um instalador NSIS em um Windows real. O workflow de CI inclui compilação e testes nativos Windows; o workflow manual gera os instaladores para validação nessa plataforma.
 - O executável Tauri foi compilado no Linux. Um teste nativo adicional desserializa a configuração real do plugin updater, incluindo o estado inicial sem endpoint de distribuição. Isso não substitui uma sessão gráfica de uso nativo, a geração/instalação do AppImage ou os testes nas distribuições que serão declaradas suportadas.
 - MolaStruct 0.5.0 já tem pacotes publicados e verificados no catálogo. ConsoloStruct tem a esteira preparada e aguarda a publicação autorizada pelo mantenedor.
-- A atualização assinada do próprio launcher depende da primeira release de seus binários no hub; as chaves e variáveis públicas já foram configuradas, mas nenhum reinício por atualização real foi executado.
+- O launcher 0.2.1 já tem binários e feed publicados. A atualização entre duas versões públicas e o reinício por atualização real ainda não foram exercitados.
 - Os testes do launcher não validam os motores de cálculo de engenharia dos aplicativos.
 
 ## Antes de uma release pública
