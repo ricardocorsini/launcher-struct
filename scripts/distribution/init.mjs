@@ -233,7 +233,7 @@ for (const product of products) {
   const changes = [
     {
       path: '.github/workflows/release.yml',
-      content: releaseWorkflow({ product, hubRepo, pinned }),
+      content: releaseWorkflow({ product, hubRepo, pinned, branch: repo.default_branch }),
     },
   ];
   const packageFile = api(`repos/${product.sourceRepo}/contents/package.json?ref=${sourceHead}`);
@@ -249,6 +249,14 @@ for (const product of products) {
       content: await readFile(join(root, 'scripts/openstruct-version.mjs'), 'utf8'),
     },
   );
+  changes.push({
+    path: 'scripts/openstruct-release-request.mjs',
+    content: await readFile(join(root, 'scripts/openstruct-release-request.mjs'), 'utf8'),
+  });
+  changes.push({
+    path: 'scripts/distribution/request-release.test.mjs',
+    content: await readFile(join(root, 'scripts/distribution/request-release.test.mjs'), 'utf8'),
+  });
   if (product.id === 'launcher')
     changes.push({ path: 'catalog/trust.json', content: JSON.stringify(trust, null, 2) + '\n' });
   const formattedChanges = await formatProductFiles({

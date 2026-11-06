@@ -1,21 +1,42 @@
 name: Publish release
 on:
   push:
+    branches: ['master']
     tags: ['v*']
+    paths: ['.github/release-request.json']
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag existente, por exemplo v0.3.1'
+        description: 'Tag da versão, por exemplo v0.5.0'
         required: true
         type: string
 permissions:
   contents: write
 jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - run: node --test scripts/distribution/request-release.test.mjs
+      - name: Prepare the version without replacing published tags
+        id: version
+        run: node scripts/openstruct-release-request.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_INPUT_TAG: ${{ inputs.tag }}
   release:
+    needs: prepare
     uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@225c3df61ff88c3e454c5ec23420bc324166afb3
     with:
       product-id: launcher
-      tag: ${{ inputs.tag || github.ref_name }}
+      tag: ${{ needs.prepare.outputs.tag }}
       distribution-repo: ricardocorsini/openstruct-catalog
       tooling-ref: 225c3df61ff88c3e454c5ec23420bc324166afb3
     secrets:

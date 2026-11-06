@@ -109,6 +109,50 @@ export async function formatProductFiles({ repository, ref, tree, files }, clien
   }
 }
 
-export function releaseWorkflow({ product, hubRepo, pinned }) {
-  return `name: Publish release\non:\n  push:\n    tags: ['v*']\n  workflow_dispatch:\n    inputs:\n      tag:\n        description: 'Tag existente, por exemplo v0.3.1'\n        required: true\n        type: string\npermissions:\n  contents: write\njobs:\n  release:\n    uses: ${hubRepo}/.github/workflows/release-product.yml@${pinned}\n    with:\n      product-id: ${product.id}\n      tag: \${{ inputs.tag || github.ref_name }}\n      distribution-repo: ${hubRepo}\n      tooling-ref: ${pinned}\n    secrets:\n      package-signing-key: \${{ secrets.OPENSTRUCT_PACKAGE_KEY }}\n      distribution-token: \${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}\n${product.id === 'launcher' ? '      tauri-signing-key: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}\n' : ''}`;
+export function releaseWorkflow({ product, hubRepo, pinned, branch = 'master' }) {
+  return `name: Publish release
+on:
+  push:
+    branches: [${JSON.stringify(branch)}]
+    tags: ['v*']
+    paths: ['.github/release-request.json']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag da versão, por exemplo v0.5.0'
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: \${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - run: node --test scripts/distribution/request-release.test.mjs
+      - name: Prepare the version without replacing published tags
+        id: version
+        run: node scripts/openstruct-release-request.mjs
+        env:
+          GH_TOKEN: \${{ github.token }}
+          RELEASE_INPUT_TAG: \${{ inputs.tag }}
+  release:
+    needs: prepare
+    uses: ${hubRepo}/.github/workflows/release-product.yml@${pinned}
+    with:
+      product-id: ${product.id}
+      tag: \${{ needs.prepare.outputs.tag }}
+      distribution-repo: ${hubRepo}
+      tooling-ref: ${pinned}
+    secrets:
+      package-signing-key: \${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
+      distribution-token: \${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}
+${product.id === 'launcher' ? '      tauri-signing-key: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}\n' : ''}`;
 }

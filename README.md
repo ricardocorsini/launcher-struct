@@ -28,9 +28,9 @@ A interface usa a identidade OpenStruct: cobalto `#3448D1`, marfim, Sora, Inter,
 
 ## Estado desta versão
 
-**v0.2.0 — infraestrutura de publicação e detecção periódica de versões.** O catálogo incluído apresenta os dois produtos, com informações e documentação. **Os instaladores desses produtos e a fonte online ainda não foram publicados/configurados.** Por isso, eles aparecem como “Em desenvolvimento”: não há downloads fictícios, versões instaladas simuladas ou botão de instalação que apenas reproduza uma animação.
+**v0.2.0 — publicação e detecção periódica de versões.** O catálogo público assinado já oferece o [MolaStruct 0.5.0 para Windows e Linux](https://github.com/ricardocorsini/mola-struct/releases/tag/v0.5.0). O ConsoloStruct 0.6.0 tem código desktop e workflow integrados; a primeira publicação será feita após a revisão do mantenedor. O catálogo local incluído é uma base editorial sem instaladores: os downloads reais vêm da fonte assinada.
 
-O gerenciador nativo e os adaptadores NSIS/AppImage estão implementados. A configuração inicial agora tem um comando próprio, workflows reutilizáveis e catálogo assinado. Consulte o [passo a passo de GitHub Releases](docs/RELEASES.md). A ativação inclui as chaves públicas em `catalog/trust.json`. O launcher não aceita um pacote sem origem autorizada, metadados válidos e assinatura reconhecida. A atualização do próprio launcher também fica desativada até a configuração do endpoint e da chave próprios.
+O gerenciador nativo e os adaptadores NSIS/AppImage estão implementados. A configuração inicial usa um comando próprio, workflows reutilizáveis e catálogo assinado. Consulte o [passo a passo de GitHub Releases](docs/RELEASES.md). As chaves públicas e a fonte oficial estão em `catalog/trust.json`. O launcher exige origem autorizada, metadados válidos e assinatura reconhecida. A atualização do próprio launcher depende de sua primeira publicação no hub; ela é separada das releases dos aplicativos.
 
 Veja [VALIDACAO.md](docs/VALIDACAO.md) para as verificações feitas e os limites. Compilar a aplicação não substitui validar seus instaladores nos sistemas de destino.
 

@@ -1,9 +1,17 @@
 # GitHub Releases e atualizações do Struct Launcher
 
+## Estado em 06/11/2026
+
+- [MolaStruct 0.5.0 publicado](https://github.com/ricardocorsini/mola-struct/releases/tag/v0.5.0), com Windows x86_64 (NSIS), Linux x86_64 (AppImage), SHA-256 e manifesto assinado. Fonte imutável: `9cc4c390fa985ba25d34b99c912d25cb7d8dd8b9`.
+- O catálogo oficial já inclui essa versão; as assinaturas e os hashes dos dois downloads foram conferidos.
+- ConsoloStruct 0.6.0 conectado à mesma esteira. Seu código já foi enviado durante esta integração. A tag não foi criada porque o mantenedor ainda está revisando a primeira versão.
+- As chaves públicas de produção estão configuradas. As chaves privadas permanecem nos Secrets e no backup do mantenedor.
+- A primeira publicação dos binários do próprio launcher é uma etapa separada, descrita abaixo.
+
 ## O processo adotado
 
 Uma alteração de código entra no Git normalmente. Uma **nova versão** é publicada quando
-o mantenedor cria uma tag SemVer, como `v0.3.1`. O push dessa tag inicia o workflow:
+o mantenedor cria uma tag SemVer, como `v0.5.1`. O push dessa tag inicia o workflow:
 
 1. Confere se a tag, o `package.json`, o Tauri e o Cargo estão na mesma versão.
 2. Executa as verificações do projeto e compila Windows x64 (NSIS) e Linux x64 (AppImage).
@@ -18,12 +26,12 @@ instaladores usados pelo launcher.
 
 ## Organização dos repositórios
 
-| Produto                | Código-fonte                                   | Releases públicas                                    |
-| ---------------------- | ---------------------------------------------- | ---------------------------------------------------- |
-| MolaStruct             | `ricardocorsini/mola-struct`                   | No próprio repositório                               |
-| ConsoloStruct          | `ricardocorsini/consolo-struct`                | No próprio repositório, quando houver código desktop |
-| Struct Launcher        | `ricardocorsini/launcher-struct`               | No hub público, tags `launcher-v…`                   |
-| Catálogo e ferramentas | `ricardocorsini/openstruct-catalog` (proposto) | Endpoint estático e workflow reutilizável            |
+| Produto                | Código-fonte                        | Releases públicas                         |
+| ---------------------- | ----------------------------------- | ----------------------------------------- |
+| MolaStruct             | `ricardocorsini/mola-struct`        | No próprio repositório                    |
+| ConsoloStruct          | `ricardocorsini/consolo-struct`     | No próprio repositório                    |
+| Struct Launcher        | `ricardocorsini/launcher-struct`    | No hub público, tags `launcher-v…`        |
+| Catálogo e ferramentas | `ricardocorsini/openstruct-catalog` | Endpoint estático e workflow reutilizável |
 
 O hub separado permite distribuir o launcher sem mudar a visibilidade do repositório de
 código. Os computadores dos usuários acessam somente URLs públicas: não precisam de conta
@@ -31,10 +39,9 @@ GitHub, token ou acesso aos fontes privados.
 
 ## Ativar uma única vez
 
-O código desta versão inclui a infraestrutura, mas **não contém chaves de produção nem
-publica releases por conta própria**. O hub e os Secrets precisam ser configurados na conta
-do mantenedor. O conector disponível nesta sessão não oferece criação de repositórios nem
-administração de Secrets. O inicializador executa essa parte pelo GitHub CLI autenticado.
+Esta configuração já foi concluída para o ecossistema. O roteiro a seguir serve para
+manutenção ou preparação de outro ambiente com o mesmo backup de chaves. O código contém
+somente as chaves públicas; os Secrets são cadastrados pelo GitHub CLI autenticado.
 
 No seu computador, instale Node.js 22.12+, npm, Git e o [GitHub CLI](https://cli.github.com/).
 Abra o terminal e execute:
@@ -101,9 +108,34 @@ O mesmo Secret é **opcional** nos repositórios públicos dos apps. Com ele, a 
 o hub imediatamente por `repository_dispatch`. Sem ele, o hub encontra as novas releases
 pela execução agendada. Não é necessário ampliar o token para incluir os repositórios dos apps.
 
-## Publicar o primeiro MolaStruct
+## Publicar sem criar a tag no terminal
 
-Na inspeção de 06/11/2026, o MolaStruct tinha fonte desktop na versão `0.3.0` e nenhuma release.
+Em Actions → **Publish release → Run workflow**, escolha a branch padrão e informe a tag
+SemVer. O workflow verifica package.json, Tauri e Cargo e cria a tag da versão selecionada
+quando ela ainda não existe. Tags existentes são preservadas.
+
+Outra opção é versionar uma solicitação em `.github/release-request.json`:
+
+```json
+{
+  "schemaVersion": 1,
+  "tag": "v0.5.0",
+  "commit": "9cc4c390fa985ba25d34b99c912d25cb7d8dd8b9"
+}
+```
+
+O exemplo acima corresponde à primeira publicação do MolaStruct. Use o SHA completo do
+código revisado de cada produto. Um commit dessa solicitação na branch padrão dispara a
+preparação da tag e os mesmos builds assinados. O commit que contém a solicitação pode ser
+diferente do commit do código a distribuir: o SHA declarado é conferido e preservado.
+
+Esse caminho permite ao mantenedor operar a publicação pelo GitHub, inclusive com ferramentas
+que podem editar arquivos mas não têm uma operação específica para criar tags. O `GITHUB_TOKEN`
+do próprio workflow executa a operação autorizada, sem token pessoal no código.
+
+## Atualizar o MolaStruct
+
+A primeira release pública é `v0.5.0`, criada no commit indicado no início deste documento.
 O nome do binário nativo é `molasstruct`; a integração lê o Cargo e preserva esse nome, sem
 renomear o executável instalado para o nome comercial.
 
@@ -115,24 +147,23 @@ sincronize antes a nova versão:
 cd mola-struct
 git pull --ff-only
 npm ci
-npm run release:version -- 0.3.1
+npm run release:version -- 0.5.1
 npm run check
 npm run format
 git diff
 git add .
-git commit -m "release: MolaStruct 0.3.1"
-git tag -a v0.3.1 -m "MolaStruct 0.3.1"
+git commit -m "release: MolaStruct 0.5.1"
+git tag -a v0.5.1 -m "MolaStruct 0.5.1"
 git push
-git push origin v0.3.1
+git push origin v0.5.1
 ```
 
-`0.3.1` é um exemplo de próximo número, não uma release já publicada. O comando de versão
+`0.5.1` é um exemplo de próximo número, não uma release já publicada. O comando de versão
 atualiza package.json, package-lock, configuração Tauri, manifesto nativo e os crates locais
 que compartilham a versão atual, incluindo seus lockfiles. Ele não cria commit nem tag.
 
-Para a primeira release da versão que já está `0.3.0`, sem alterar o número, basta revisar,
-validar e criar/enviar `v0.3.0` no commit que já inclui o novo workflow. Não crie a tag em um
-commit antigo que ainda não contém a integração.
+Como alternativa, depois de enviar o código revisado, execute **Actions → Publish release →
+Run workflow**, na branch padrão, e informe `v0.5.1`. O workflow cria a tag no commit selecionado.
 
 Notas podem ser preparadas em um **rascunho** de release com a mesma tag antes de disparar
 o workflow. Se não houver rascunho, o publicador cria um com notas básicas. O manifesto assinado
@@ -144,6 +175,17 @@ a tag. Um rascunho de uma tentativa que falhou pode ser completado pela reexecu�
 existentes têm o mesmo SHA-256. O publicador nunca sobrescreve assets. Se você recompilar e os
 bytes mudarem, remova somente o rascunho incompleto antes de repetir, ou use outra versão. Uma release
 já publicada não é sobrescrita: corrija o problema e publique outro número.
+
+## Publicar o primeiro ConsoloStruct
+
+O repositório já recebeu código desktop na versão `0.6.0`, o comando `release:version`, o
+workflow e as ferramentas de publicação. O CI usa Ubuntu 24.04, compatível com o Playwright
+fixado no projeto. O teste de repouso da vista 3D aguarda o desenho da nova orientação.
+
+Depois de concluir os ajustes e enviar o código, confira o CI e execute **Actions → Publish
+release → Run workflow → tag `v0.6.0`**, na branch padrão. Não é necessário reconfigurar as
+chaves nem o catálogo. Se o número do código tiver mudado, use a tag da versão efetiva.
+O catálogo inclui os instaladores após os dois builds e a publicação assinada terminarem.
 
 ## Publicar e atualizar o próprio launcher
 
@@ -218,13 +260,12 @@ GitHub pode desativar workflows agendados em repositórios públicos sem ativida
 Monitore a aba Actions e reative o agendamento quando necessário. O catálogo retém as 20 versões
 mais recentes de cada app. Revise a política antes de ultrapassar 500 releases no mesmo repo.
 
-## Pendências de ativação observadas nesta entrega
+## Etapas que permanecem para o mantenedor
 
-- Executar o inicializador na sua conta e guardar o backup das chaves.
-- Cadastrar o token limitado ao hub para publicar os binários do launcher privado.
-- Criar a primeira tag e validar os instaladores reais.
-- Subir o código desktop do ConsoloStruct: na inspeção desta entrega o repositório continha
-  apenas README. O inicializador o deixa preparado nas chaves/catálogo e pula seu workflow
-  enquanto esse código não existir. Reexecute o inicializador com o mesmo backup depois.
+- Preservar o backup das chaves de produção já cadastradas.
+- Conferir o Secret do token limitado ao hub antes de publicar o launcher privado.
+- Publicar o ConsoloStruct quando seus ajustes estiverem revisados.
+- Validar instalação, abertura, remoção e preservação de projetos nos dois sistemas. Uma
+  atualização entre versões reais só poderá ser testada após existir uma segunda release.
 
-Não há chaves privadas de produção, tags ou releases reais criadas nesta implementação.
+As releases publicadas são imutáveis. Alterações posteriores no código entram na próxima versão.

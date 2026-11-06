@@ -6,7 +6,7 @@
 | ----------------------------------------------- | ------------------- |
 | TypeScript e build Vite                         | Aprovados           |
 | Vitest: domínio e coordenação das consultas     | 12 testes aprovados |
-| Node: assinaturas, releases, catálogo e versão  | 27 testes aprovados |
+| Node: assinaturas, releases, catálogo e versão  | 33 testes aprovados |
 | Rust: núcleo e migração para o catálogo oficial | 18 testes aprovados |
 | Playwright/Chromium                             | 8 testes aprovados  |
 | Clippy do núcleo com `-D warnings`              | Aprovado            |
@@ -22,6 +22,9 @@ diferentes, configuração por diretório, limpeza após falha do formatter, val
 do formatter e preservação de alterações concorrentes. Um teste de integração local executou
 o formatter real de cada projeto (MolaStruct: Prettier 3.6.2; launcher: 3.9.10) e confirmou
 que o workflow e o script gerados são idênticos aos arquivos aprovados nesses projetos.
+
+O fluxo de solicitação de release tem seis testes: criação no commit escolhido, reexecução
+sem mover tags, versão/branch incompatíveis, publicação manual, push de tag e validação SemVer.
 
 O teste novo da interface usa uma ponte nativa substituída apenas no ambiente de teste:
 confere a consulta ao abrir, o aviso de atualização de aplicativo e do launcher, a nova
@@ -40,14 +43,20 @@ O teste Rust de migração abre um estado de instalação antiga sem URL, aplica
 oficial e preserva preferências e uma URL personalizada existente. Desligar a opção de
 verificação automática continua sendo respeitado.
 
-**Limites desta entrega:** a ativação completa na conta real, com Secrets, tags e releases,
-ainda precisa ser concluída. Os testes do inicializador usam respostas GitHub controladas. Não há
-chaves de produção nesta sessão. O fluxo real GitHub Actions → instaladores Windows/Linux →
-atualização em computadores precisa ser executado após a ativação descrita em RELEASES.md.
-A versão 0.2 foi verificada no núcleo Rust e no build da interface; o build nativo completo
-desta versão será conferido pelo CI e pelos primeiros pacotes. O registro de build desktop
-abaixo pertence à versão 0.1. Os motores de cálculo dos produtos não são validados por estes
-testes do launcher.
+O CI nativo da versão 0.2 passou em Windows e Linux. A primeira publicação real do MolaStruct
+foi concluída: [Actions 42249468813](https://github.com/ricardocorsini/mola-struct/actions/runs/42249468813).
+Os builds NSIS/AppImage, os testes e a publicação passaram. A release `v0.5.0` permanece
+vinculada ao commit `9cc4c390fa985ba25d34b99c912d25cb7d8dd8b9`.
+
+Os dois instaladores publicados foram baixados; seus tamanhos e SHA-256 conferem com o
+manifesto. As assinaturas Ed25519 do manifesto, dos pacotes e do catálogo público foram
+verificadas com as chaves do launcher. O catálogo contém MolaStruct 0.5.0 com os dois alvos e
+ConsoloStruct sem versões publicadas. As chaves privadas de produção não estão nesta sessão.
+
+**Limites desta entrega:** o percurso de instalação e abertura gráfica dos instaladores reais
+nos computadores dos usuários ainda precisa de validação. Uma atualização real entre duas
+versões depende da próxima release. O registro de build desktop abaixo pertence à versão 0.1.
+Os motores de cálculo dos produtos não são validados pelos testes do launcher.
 
 ## Registro da v0.1.0 — verificações executadas
 
@@ -77,8 +86,8 @@ As imagens em `docs/assets/` são capturas reais da interface de prévia no nave
 
 - A sessão de desenvolvimento não executou um instalador NSIS em um Windows real. O workflow de CI inclui compilação e testes nativos Windows; o workflow manual gera os instaladores para validação nessa plataforma.
 - O executável Tauri foi compilado no Linux. Um teste nativo adicional desserializa a configuração real do plugin updater, incluindo o estado inicial sem endpoint de distribuição. Isso não substitui uma sessão gráfica de uso nativo, a geração/instalação do AppImage ou os testes nas distribuições que serão declaradas suportadas.
-- ConsoloStruct e MolaStruct ainda não têm pacotes publicados no catálogo desta entrega. Instalar e atualizar esses produtos reais de ponta a ponta depende da publicação e assinatura posterior desses pacotes.
-- A atualização assinada do próprio launcher depende de chave e endpoint ainda não configurados; nenhum reinício por atualização real foi executado.
+- MolaStruct 0.5.0 já tem pacotes publicados e verificados no catálogo. ConsoloStruct tem a esteira preparada e aguarda a publicação autorizada pelo mantenedor.
+- A atualização assinada do próprio launcher depende da primeira release de seus binários no hub; as chaves e variáveis públicas já foram configuradas, mas nenhum reinício por atualização real foi executado.
 - Os testes do launcher não validam os motores de cálculo de engenharia dos aplicativos.
 
 ## Antes de uma release pública

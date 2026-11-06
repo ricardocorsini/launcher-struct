@@ -2,6 +2,9 @@
 
 ## 0.2.0
 
+- Publicação por solicitação versionada ou execução manual no GitHub, com criação segura da tag e comparação das versões do frontend, Tauri e Cargo.
+- Integração de release preparada no ConsoloStruct 0.6.0, junto ao MolaStruct 0.5.0.
+- Primeira publicação real do MolaStruct 0.5.0: instaladores Windows/Linux e catálogo assinado conferidos.
 - Correção da configuração de produtos: arquivos gerados passam pelo Prettier fixado no lockfile e pelas regras do repositório de destino antes do commit. A leitura dos arquivos é vinculada a um commit para preservar alterações concorrentes.
 
 - Correção do inicializador: preserva a branch padrão do hub e usa seu nome nos endpoints e workflows. Remove a dependência de renomeação assíncrona de `master` para `main`.
@@ -16,7 +19,7 @@
 - Comando para sincronizar versões em package.json, Tauri, Cargo e lockfiles.
 - Testes de integração do publicador de catálogo e documentação de ativação.
 
-A infraestrutura exige configuração inicial na conta do mantenedor. Esta entrega não gera chaves de produção nem publica releases reais.
+A configuração de produção foi ativada pelo mantenedor. O código guarda somente as chaves públicas. A primeira release dos binários do próprio launcher continua separada das releases dos aplicativos.
 
 ## 0.1.0
 
