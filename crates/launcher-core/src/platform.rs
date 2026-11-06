@@ -205,16 +205,8 @@ pub fn uninstall(item: &Installed) -> Result<()> {
     #[cfg(target_os = "linux")]
     {
         fs::remove_dir_all(&app)?;
-        if let Some(path) = desktop_path(&item.app_id) {
-            if fs::read_to_string(&path)
-                .map(|s| {
-                    s.contains("X-OpenStruct-Managed=true")
-                        && s.contains(&format!("X-OpenStruct-Root={}\n", item.root))
-                })
-                .unwrap_or(false)
-            {
-                fs::remove_file(path)?;
-            }
+        if let Some(data) = dirs::data_dir() {
+            crate::desktop::remove_app_shortcut(&data, item)?;
         }
         return Ok(());
     }
@@ -224,45 +216,11 @@ pub fn uninstall(item: &Installed) -> Result<()> {
     }
 }
 
-#[cfg(target_os = "linux")]
-fn desktop_path(id: &str) -> Option<PathBuf> {
-    dirs::data_dir().map(|d| {
-        d.join("applications")
-            .join(format!("openstruct-{id}.desktop"))
-    })
-}
-
-#[cfg(target_os = "linux")]
-fn quote_desktop(value: &str) -> String {
-    format!(
-        "\"{}\"",
-        value
-            .replace('\\', "\\\\")
-            .replace('"', "\\\"")
-            .replace('`', "\\`")
-            .replace('$', "\\$")
-    )
-}
-
 pub fn write_shortcut(item: &Installed) -> Result<()> {
     #[cfg(target_os = "linux")]
     {
-        let path = desktop_path(&item.app_id).context("Menu de aplicativos não encontrado")?;
-        if path.exists() {
-            ensure!(
-                fs::read_to_string(&path)?.contains("X-OpenStruct-Managed=true"),
-                "Já existe um atalho criado fora do launcher"
-            );
-        }
-        fs::create_dir_all(path.parent().context("Pasta de atalhos inválida")?)?;
-        let icon = Path::new(&item.root).join(&item.app_id).join("icon.svg");
-        fs::write(
-            &icon,
-            include_bytes!("../../../public/assets/openstruct-mark.svg"),
-        )?;
-        let name: String = item.name.chars().filter(|c| !c.is_control()).collect();
-        let content = format!("[Desktop Entry]\nType=Application\nName={name}\nExec={}\nIcon={}\nTerminal=false\nCategories=Education;Science;Engineering;\nX-OpenStruct-Managed=true\nX-OpenStruct-Root={}\n", quote_desktop(&item.executable), icon.display(), item.root);
-        fs::write(&path, content)?;
+        let data = dirs::data_dir().context("Menu de aplicativos não encontrado")?;
+        crate::desktop::write_app_shortcut(&data, item)?;
     }
     let _ = item;
     Ok(())

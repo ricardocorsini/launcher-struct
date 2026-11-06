@@ -103,3 +103,11 @@ As imagens em `docs/assets/` são capturas reais da interface de prévia no nave
 ## Antes de uma release pública
 
 Validar instalação limpa, abertura, atualização da versão anterior, atalhos, remoção e preservação de projetos em Windows e em cada base Linux suportada. Testar falta de espaço, interrupção de rede, processo aberto, erro do instalador, arquivo corrompido e chave incorreta. Os arquivos disponibilizados e a fonte assinada devem corresponder ao sistema e à arquitetura declarados.
+
+## Correção de identidade e menu Linux — 0.2.3
+
+- TypeScript e build aprovados; 13 testes de domínio/interface e 37 testes Node de distribuição passaram.
+- Os 25 testes Rust do núcleo Linux passaram, incluindo migração dos atalhos antigos, arte por produto, preservação de atalhos externos e registro do AppImage. Clippy e rustfmt aprovados.
+- O teste GLib abre um executável real por `.desktop` e confere o caminho exato com espaços, acentos e caracteres reservados. `desktop-file-validate` conferiu as entradas geradas.
+- O PNG do MolaStruct no menu corresponde à redução LANCZOS do original de 1254 × 1254 pixels do Drive.
+- O dock ainda pode conservar favoritos e ícones em cache do ambiente gráfico.

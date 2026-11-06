@@ -29,3 +29,7 @@ Se precisar recomeçar as preferências, renomear o estado preservado permite um
 ## Duas instâncias
 
 Um lock protege as gravações. Feche a instância anterior. Não exclua arquivos de lock enquanto um processo estiver em execução; o lock é liberado pelo sistema quando a instância termina.
+
+## Ícone ou atalho no Linux
+
+Abra o AppImage do Struct Launcher 0.2.3 ou posterior uma vez. Ele cria sua entrada no menu e atualiza os atalhos dos aplicativos instalados com a arte de cada um. Veja [Instalação e menu Linux](LINUX.md).

@@ -150,6 +150,60 @@ impl Engine {
         }))
     }
 
+    /// Repair menu integration once on native startup, including already-installed apps.
+    pub fn integrate_desktop(&self) {
+        #[cfg(target_os = "linux")]
+        {
+            let result = (|| {
+                let data = dirs::data_dir().context("Menu de aplicativos não encontrado")?;
+                let appimage = std::env::var_os("APPIMAGE").map(PathBuf::from);
+                self.integrate_desktop_in(&data, appimage.as_deref())
+            })();
+            if let Err(error) = result {
+                self.store
+                    .lock()
+                    .unwrap()
+                    .warnings
+                    .push(format!("Não foi possível integrar o menu Linux: {error}"));
+            }
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    pub(crate) fn integrate_desktop_in(&self, data: &Path, appimage: Option<&Path>) -> Result<()> {
+        let mut store = self.store.lock().unwrap();
+        let names: BTreeMap<_, _> = store
+            .catalog
+            .apps
+            .iter()
+            .map(|app| (app.id.clone(), app.name.clone()))
+            .collect();
+        let mut warnings = vec![];
+        for item in store.disk.inventory.values_mut() {
+            if let Some(name) = names.get(&item.app_id) {
+                item.name.clone_from(name);
+            }
+            if !item.present || item.modified {
+                continue;
+            }
+            if let Err(error) = crate::desktop::write_app_shortcut(data, item) {
+                warnings.push(format!(
+                    "Não foi possível criar o atalho de {}: {error}",
+                    item.name
+                ));
+            }
+        }
+        if let Some(appimage) = appimage {
+            if let Err(error) = crate::desktop::register_launcher(data, appimage) {
+                warnings.push(format!(
+                    "Não foi possível criar o atalho do Struct Launcher: {error}"
+                ));
+            }
+        }
+        store.warnings.extend(warnings);
+        self.save(&store)
+    }
+
     fn operation(&self, id: &str) -> Result<OperationGuard<'_>> {
         let mut operations = self.operations.lock().unwrap();
         ensure!(

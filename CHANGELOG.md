@@ -1,10 +1,18 @@
+# Histórico de mudanças
+
+## 0.2.3
+
+- Ícones próprios do MolaStruct e ConsoloStruct nos atalhos Linux, com migração dos atalhos antigos do launcher.
+- Entrada do Struct Launcher no menu ao abrir seu AppImage e atualização do caminho se o arquivo for movido.
+- Restauração dos atalhos das instalações já verificadas na inicialização, preservando arquivos e atalhos externos.
+- Identificação da janela do launcher no GNOME/Wayland e testes reais de abertura pelo GLib, incluindo caminhos com espaços e caracteres especiais.
+- Guia de instalação Linux e recuperação dos ícones oficiais dos produtos.
+
 ## 0.2.2
 
 - ArmaduraStruct no catálogo local, com ícone próprio e categoria Detalhamento.
 - Publicação central de pacotes assinados do ArmaduraStruct a partir de tag e commit imutáveis.
 - Catálogo e assinatura compatíveis com os Launchers 0.2.x existentes.
-
-# Histórico de mudanças
 
 ## 0.2.1
 

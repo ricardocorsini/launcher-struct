@@ -226,6 +226,7 @@ fn main() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             let engine = Engine::open(app.path().app_data_dir()?)?;
+            engine.integrate_desktop();
             let handle = app.handle().clone();
             engine.set_sink(Arc::new(move |snapshot| {
                 let _ = handle.emit("launcher-state", snapshot);

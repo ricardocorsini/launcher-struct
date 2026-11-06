@@ -159,3 +159,5 @@ Issues, melhorias de código, documentação e testes são bem-vindos. Leia [CON
 [MIT](LICENSE). Desenvolvido por **Ricardo Corsini e colaboradores**, no ecossistema OpenStruct. As ilustrações de Atlas e da Terra foram criadas para a OpenStruct com geração de imagem. As referências ArtCraft orientaram a discussão de funcionalidades; a interface, os componentes e os recursos deste repositório foram elaborados para a OpenStruct.
 
 Fontes e dependências mantêm suas próprias licenças. Os avisos das dependências da interface estão em [THIRD_PARTY_NOTICES.txt](public/THIRD_PARTY_NOTICES.txt).
+
+A versão 0.2.3 acrescenta os ícones próprios por produto e a integração do AppImage com o menu. Consulte [Instalação Linux](docs/LINUX.md).
