@@ -14,3 +14,7 @@ test-results/
 *.log
 *.tsbuildinfo
 src-tauri/gen/
+
+.openstruct-tools/
+.openstruct-release-*.json
+release-output/

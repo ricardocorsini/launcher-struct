@@ -2421,3 +2421,36 @@ kbd {
     scroll-behavior: auto !important;
   }
 }
+
+.release-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-left: 3px solid #3448d1;
+  background: var(--panel);
+  margin-bottom: 20px;
+}
+.release-banner > span {
+  flex: 1;
+  min-width: 0;
+}
+.release-banner strong,
+.release-banner small {
+  display: block;
+}
+.release-banner small {
+  margin-top: 5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+@media (max-width: 620px) {
+  .release-banner {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+  .release-banner > .button {
+    width: 100%;
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "struct-launcher",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "A casa dos seus aplicativos de engenharia. Launcher desktop do ecossistema OpenStruct.",
   "type": "module",
@@ -15,7 +15,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
-    "check": "tsc -b && vitest run && node --test scripts/security.test.mjs && node scripts/validate-catalog.mjs catalog/bundled.json",
+    "check": "tsc -b && vitest run && node --test scripts/security.test.mjs scripts/distribution/release.test.mjs && node scripts/validate-catalog.mjs catalog/bundled.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "tauri": "tauri",
@@ -26,7 +26,9 @@
     "catalog:validate": "node scripts/validate-catalog.mjs",
     "keys:generate": "node scripts/keys.mjs",
     "catalog:sign": "node scripts/sign-catalog.mjs",
-    "package:sign": "node scripts/sign-package.mjs"
+    "package:sign": "node scripts/sign-package.mjs",
+    "distribution:init": "node scripts/distribution/init.mjs",
+    "release:version": "node scripts/openstruct-version.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",

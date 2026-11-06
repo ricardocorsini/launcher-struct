@@ -10,7 +10,7 @@ Seus aplicativos de engenharia, juntos em um só lugar.
 
 [![CI](https://github.com/ricardocorsini/launcher-struct/actions/workflows/ci.yml/badge.svg)](https://github.com/ricardocorsini/launcher-struct/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-3448D1)](LICENSE)
-[![Versão](https://img.shields.io/badge/vers%C3%A3o-0.1.0-3448D1)](CHANGELOG.md)
+[![Versão](https://img.shields.io/badge/vers%C3%A3o-0.2.0-3448D1)](CHANGELOG.md)
 
 Parte do ecossistema **OpenStruct** · Engenharia estrutural aberta
 
@@ -28,13 +28,27 @@ A interface usa a identidade OpenStruct: cobalto `#3448D1`, marfim, Sora, Inter,
 
 ## Estado desta versão
 
-**v0.1.0 — primeira implementação.** O catálogo incluído apresenta os dois produtos, com informações e documentação. **Os instaladores desses produtos e a fonte online ainda não foram publicados/configurados.** Por isso, eles aparecem como “Em desenvolvimento”: não há downloads fictícios, versões instaladas simuladas ou botão de instalação que apenas reproduza uma animação.
+**v0.2.0 — infraestrutura de publicação e detecção periódica de versões.** O catálogo incluído apresenta os dois produtos, com informações e documentação. **Os instaladores desses produtos e a fonte online ainda não foram publicados/configurados.** Por isso, eles aparecem como “Em desenvolvimento”: não há downloads fictícios, versões instaladas simuladas ou botão de instalação que apenas reproduza uma animação.
 
-O gerenciador nativo e os adaptadores NSIS/AppImage estão implementados. A publicação posterior precisa incluir os pacotes reais e as chaves públicas em `catalog/trust.json`. O launcher não aceita um pacote sem origem autorizada, metadados válidos e assinatura reconhecida. A atualização do próprio launcher também fica desativada até a configuração do endpoint e da chave próprios.
+O gerenciador nativo e os adaptadores NSIS/AppImage estão implementados. A configuração inicial agora tem um comando próprio, workflows reutilizáveis e catálogo assinado. Consulte o [passo a passo de GitHub Releases](docs/RELEASES.md). A ativação inclui as chaves públicas em `catalog/trust.json`. O launcher não aceita um pacote sem origem autorizada, metadados válidos e assinatura reconhecida. A atualização do próprio launcher também fica desativada até a configuração do endpoint e da chave próprios.
 
 Veja [VALIDACAO.md](docs/VALIDACAO.md) para as verificações feitas e os limites. Compilar a aplicação não substitui validar seus instaladores nos sistemas de destino.
 
+## Ativar GitHub Releases
+
+```sh
+gh auth login --web --scopes workflow
+npm ci
+npm run distribution:init -- --hub ricardocorsini/openstruct-catalog --create-public
+```
+
+O inicializador cria o hub público dedicado, gera e cadastra as chaves e conecta os workflows dos produtos com código desktop. O launcher privado também requer um token limitado ao hub. Nenhuma tag é criada pelo comando. Veja [RELEASES.md](docs/RELEASES.md) para configuração, backup de chaves e publicação de cada atualização.
+
 ## Recursos
+
+- Consultas automáticas ao abrir, a cada 15 minutos e ao retornar à janela/conexão.
+- Avisos distintos para novas versões de aplicativos e do próprio launcher.
+- Publicação por tags, builds Windows/Linux, manifesto assinado e catálogo público independente do código privado.
 
 - Biblioteca em grade e lista, busca sem distinção de acentos, filtros por área e ordenação.
 - Detalhes de produto, recursos, requisitos, versões e links oficiais.

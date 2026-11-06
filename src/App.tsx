@@ -33,6 +33,7 @@ import { CloseButton, Dialog, EmptyState } from './components/Primitives';
 import type { ProductActions } from './components/ProductCard';
 import type { Job, LauncherUpdate, Page, Product, Settings, Snapshot } from './types';
 import { lt } from 'semver';
+import { createUpdateChecker, UPDATE_INTERVAL_MS } from './update-checker';
 
 const ProductDetail = lazy(() => import('./components/ProductDetail'));
 const SettingsView = lazy(() => import('./components/SettingsView'));
@@ -63,6 +64,7 @@ export default function App() {
   const busyRef = useRef(false);
   const [toast, setToast] = useState<{ message: string; error: boolean; id: number } | null>(null);
   const [launcherUpdate, setLauncherUpdate] = useState<LauncherUpdate | null>(null);
+  const [checkFailed, setCheckFailed] = useState(false);
   const search = useRef<HTMLInputElement>(null);
   const catalog = useRef<HTMLDivElement>(null);
   const latest = useRef(snapshot);
@@ -82,6 +84,26 @@ export default function App() {
         !previous || next.revision >= previous.revision ? next : previous,
       ),
     [],
+  );
+  const [updateChecker] = useState(() =>
+    createUpdateChecker({
+      snapshot: () => latest.current,
+      refresh: bridge.refresh,
+      checkLauncher: bridge.checkLauncher,
+      online: () => navigator.onLine,
+      busy: () => busyRef.current,
+    }),
+  );
+  const checkReleases = useCallback(
+    async (manual = false) => {
+      const result = await updateChecker.check(manual);
+      if (result.snapshot) accept(result.snapshot);
+      if (result.launcher) setLauncherUpdate(result.launcher);
+      if (result.snapshot || result.launcher || result.errors.length)
+        setCheckFailed(Boolean(result.errors.length));
+      if (manual && result.errors.length) throw result.errors[0];
+    },
+    [accept, updateChecker],
   );
 
   useEffect(() => {
@@ -104,14 +126,6 @@ export default function App() {
       if (disposed) return;
       accept(next);
       setBootError(null);
-      if (next.native && next.settings.checkOnStart && next.settings.catalogUrl) {
-        try {
-          const refreshed = await bridge.refresh();
-          if (!disposed) accept(refreshed);
-        } catch (error) {
-          if (!disposed) onError(error);
-        }
-      }
     };
     void start().catch((error) => {
       if (!disposed) setBootError(String(error));
@@ -122,6 +136,26 @@ export default function App() {
       unlistenClose?.();
     };
   }, [boot, accept, onError]);
+
+  useEffect(() => {
+    if (!snapshot?.native || !snapshot.settings.checkOnStart) return;
+    void checkReleases();
+    const timer = window.setInterval(() => {
+      void checkReleases();
+    }, UPDATE_INTERVAL_MS);
+    const wake = () => {
+      if (document.visibilityState === 'visible') void checkReleases();
+    };
+    window.addEventListener('online', wake);
+    window.addEventListener('focus', wake);
+    document.addEventListener('visibilitychange', wake);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('online', wake);
+      window.removeEventListener('focus', wake);
+      document.removeEventListener('visibilitychange', wake);
+    };
+  }, [snapshot?.native, snapshot?.settings.checkOnStart, checkReleases]);
 
   useEffect(() => {
     const theme = snapshot?.settings.theme ?? 'light';
@@ -259,8 +293,8 @@ export default function App() {
     void run(
       'refresh',
       async () => {
-        const refreshed = await bridge.refresh();
-        accept(refreshed);
+        if (snapshot.native) await checkReleases(true);
+        else accept(await bridge.refresh());
       },
       snapshot.settings.catalogUrl ? t('refreshed') : t('refreshLocal'),
     );
@@ -390,6 +424,44 @@ export default function App() {
               </span>
             </div>
           ) : null}
+          {checkFailed ? (
+            <div className="warning-banner" role="status">
+              <CircleAlert size={17} />
+              <span>{t('connectionError')}</span>
+            </div>
+          ) : null}
+          {launcherUpdate?.version ? (
+            <div className="release-banner" role="status">
+              <Download size={20} />
+              <span>
+                <strong>Struct Launcher {launcherUpdate.version}</strong>
+                <small>{t('launcherReady')}</small>
+              </span>
+              <button
+                className="button button-primary"
+                disabled={Boolean(busy) || activeJobs.length > 0}
+                onClick={() =>
+                  void run('update-launcher', () => bridge.updateLauncher(launcherUpdate.version!))
+                }
+              >
+                {t('updateRestart')}
+              </button>
+            </div>
+          ) : null}
+          {updates.length > 0 && page !== 'updates' ? (
+            <div className="release-banner" role="status">
+              <Bell size={20} />
+              <span>
+                <strong>
+                  {t('updateAvailable')} · {updates.length}
+                </strong>
+                <small>{t('reviewUpdatesText')}</small>
+              </span>
+              <button className="button button-secondary" onClick={() => choosePage('updates')}>
+                {t('reviewUpdates')}
+              </button>
+            </div>
+          ) : null}
           {snapshot.warnings.map((warning) => (
             <div className="warning-banner" role="status" key={warning}>
               <CircleAlert size={17} />
@@ -414,9 +486,7 @@ export default function App() {
                 busy={Boolean(busy)}
                 update={launcherUpdate}
                 onCheckLauncher={() => {
-                  void run('check-launcher', async () =>
-                    setLauncherUpdate(await bridge.checkLauncher()),
-                  );
+                  void run('check-launcher', () => checkReleases(true));
                 }}
                 onUpdateLauncher={() => {
                   if (launcherUpdate?.version)

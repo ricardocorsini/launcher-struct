@@ -1,6 +1,6 @@
 # Preparação da distribuição
 
-A primeira entrega implementa a distribuição no cliente; não publica releases. Este documento registra o que será necessário para a próxima etapa.
+A versão 0.2 implementa a publicação por tags e a sincronização de um catálogo público assinado. A ativação da conta, chaves e primeiras releases está documentada em [RELEASES.md](RELEASES.md). Este documento complementa o roteiro com os formatos e critérios de validação.
 
 ## Produtos
 
@@ -38,4 +38,4 @@ No Windows, a assinatura Tauri ou a assinatura Ed25519 dos pacotes gerenciados n
 - Catálogo coerente com os arquivos publicados e as chaves compiladas.
 - Arquivos de versão já publicados não são substituídos por outros bytes com o mesmo número.
 
-O passo a passo de configuração do GitHub Releases será realizado posteriormente, conforme a decisão do autor.
+Use o inicializador e o roteiro em [RELEASES.md](RELEASES.md) para configurar a distribuição e publicar novas versões.

@@ -153,6 +153,32 @@ fn settings_are_validated_and_persisted() {
 }
 
 #[test]
+fn local_only_installations_adopt_official_catalog_and_keep_user_preferences() {
+    let temp = TempDir::new().unwrap();
+    let e = engine(&temp);
+    let mut settings = e.snapshot().settings;
+    settings.check_on_start = false;
+    e.save_settings(settings).unwrap();
+    drop(e);
+    let mut online = trust();
+    online.catalog_url = Some("https://github.com/owner/catalog.signed.json".into());
+    let e = Engine::with_catalog(temp.path().join("data"), online.clone(), catalog()).unwrap();
+    assert_eq!(e.snapshot().settings.catalog_url, online.catalog_url);
+    assert!(!e.snapshot().settings.check_on_start);
+    let mut settings = e.snapshot().settings;
+    settings.catalog_url = Some("https://github.com/custom/catalog.signed.json".into());
+    e.save_settings(settings.clone()).unwrap();
+    drop(e);
+    let e = Engine::with_catalog(temp.path().join("data"), online.clone(), catalog()).unwrap();
+    assert_eq!(e.snapshot().settings.catalog_url, settings.catalog_url);
+    settings.catalog_url = None;
+    assert_eq!(
+        e.save_settings(settings).unwrap().settings.catalog_url,
+        online.catalog_url
+    );
+}
+
+#[test]
 fn interrupted_jobs_are_not_reported_as_installed_and_partial_files_are_removed() {
     let temp = TempDir::new().unwrap();
     let e = engine(&temp);

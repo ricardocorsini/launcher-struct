@@ -1,6 +1,44 @@
-# Validação da primeira implementação
+# Validação do Struct Launcher
 
-## Verificações executadas
+## v0.2.0 — publicação e detecção de versões (06/11/2026)
+
+| Verificação                                     | Resultado           |
+| ----------------------------------------------- | ------------------- |
+| TypeScript e build Vite                         | Aprovados           |
+| Vitest: domínio e coordenação das consultas     | 12 testes aprovados |
+| Node: assinaturas, releases, catálogo e versão  | 14 testes aprovados |
+| Rust: núcleo e migração para o catálogo oficial | 18 testes aprovados |
+| Playwright/Chromium                             | 8 testes aprovados  |
+| Clippy do núcleo com `-D warnings`              | Aprovado            |
+| Prettier e rustfmt                              | Conferidos          |
+
+O teste novo da interface usa uma ponte nativa substituída apenas no ambiente de teste:
+confere a consulta ao abrir, o aviso de atualização de aplicativo e do launcher, a nova
+consulta após 15 minutos, a navegação para a atualização disponível e a ausência de qualquer
+comando de instalação automática. Também confere o layout dos avisos em tela estreita.
+Esses fixtures não são incluídos no catálogo distribuído.
+
+A integração do sincronizador executa o script real contra respostas GitHub controladas:
+verifica uma publicação válida, uma segunda consulta sem alterações, falha HTTP 503 e
+metadados adulterados. O catálogo anterior permanece byte a byte igual nas falhas. Os outros
+testes verificam vínculo de produto/tag/arquivo, assinaturas, tamanho/digest, canal beta,
+retomada de upload sem sobrescrever arquivos, coleta AppImage e sincronização dos números
+em package.json, Tauri, Cargo e lockfiles.
+
+O teste Rust de migração abre um estado de instalação antiga sem URL, aplica o novo endereço
+oficial e preserva preferências e uma URL personalizada existente. Desligar a opção de
+verificação automática continua sendo respeitado.
+
+**Limites desta entrega:** o inicializador foi revisado e seus comandos/formatos conferidos,
+mas não foi executado contra a conta real para criar hub, Secrets, tags ou releases. Não há
+chaves de produção nesta sessão. O fluxo real GitHub Actions → instaladores Windows/Linux →
+atualização em computadores precisa ser executado após a ativação descrita em RELEASES.md.
+A versão 0.2 foi verificada no núcleo Rust e no build da interface; o build nativo completo
+desta versão será conferido pelo CI e pelos primeiros pacotes. O registro de build desktop
+abaixo pertence à versão 0.1. Os motores de cálculo dos produtos não são validados por estes
+testes do launcher.
+
+## Registro da v0.1.0 — verificações executadas
 
 | Verificação                                                      | Resultado                                                                |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------ |

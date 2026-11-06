@@ -79,6 +79,11 @@ impl Engine {
             disk.schema_version == 1,
             "Estado criado por uma versão incompatível do launcher"
         );
+        // Older installations started with a local-only catalog. Adopt the newly
+        // configured official endpoint while preserving an explicit custom URL.
+        if disk.settings.catalog_url.is_none() {
+            disk.settings.catalog_url = trust.catalog_url.clone();
+        }
         disk.settings.validate(&trust)?;
         let mut warnings = vec![];
         for job in &mut disk.jobs {
@@ -221,7 +226,10 @@ impl Engine {
         }
     }
 
-    pub fn save_settings(&self, settings: Settings) -> Result<Snapshot> {
+    pub fn save_settings(&self, mut settings: Settings) -> Result<Snapshot> {
+        if settings.catalog_url.is_none() {
+            settings.catalog_url = self.trust.catalog_url.clone();
+        }
         settings.validate(&self.trust)?;
         ensure!(
             !settings.install_root.chars().any(|c| c.is_control()),

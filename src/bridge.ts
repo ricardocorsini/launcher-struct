@@ -1,6 +1,7 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import bundled from '../catalog/bundled.json';
+import manifest from '../package.json';
 import type { Catalog, LauncherUpdate, Settings, Snapshot } from './types';
 
 export const native = isTauri();
@@ -43,7 +44,7 @@ function webSnapshot(): Snapshot {
     checkedAt: null,
     warnings: [],
     runningApps: [],
-    launcherVersion: '0.1.0',
+    launcherVersion: manifest.version,
   };
 }
 async function desktop<T>(command: string, args?: Record<string, unknown>): Promise<T> {
