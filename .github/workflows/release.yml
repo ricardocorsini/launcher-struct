@@ -1,0 +1,24 @@
+name: Publish release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag existente, por exemplo v0.3.1'
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  release:
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@225c3df61ff88c3e454c5ec23420bc324166afb3
+    with:
+      product-id: launcher
+      tag: ${{ inputs.tag || github.ref_name }}
+      distribution-repo: ricardocorsini/openstruct-catalog
+      tooling-ref: 225c3df61ff88c3e454c5ec23420bc324166afb3
+    secrets:
+      package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
+      distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}
+      tauri-signing-key: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
