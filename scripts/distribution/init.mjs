@@ -8,6 +8,7 @@ import { publicRaw } from '../security.mjs';
 import { distributionEndpoints, seal } from './release-lib.mjs';
 import { api, gh, putFiles } from './github.mjs';
 import { prepareHub, renderHubTemplate } from './hub.mjs';
+import { formatProductFiles, releaseWorkflow } from './product-files.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const args = process.argv.slice(2);
@@ -215,14 +216,12 @@ const pinned = putFiles(
   files,
   'feat: configure signed OpenStruct distribution',
 );
-function wrapper(product) {
-  return `name: Publish release\non:\n  push:\n    tags: ['v*']\n  workflow_dispatch:\n    inputs:\n      tag:\n        description: 'Tag existente, por exemplo v0.3.1'\n        required: true\n        type: string\npermissions:\n  contents: write\njobs:\n  release:\n    uses: ${hubRepo}/.github/workflows/release-product.yml@${pinned}\n    with:\n      product-id: ${product.id}\n      tag: \${{ inputs.tag || github.ref_name }}\n      distribution-repo: ${hubRepo}\n      tooling-ref: ${pinned}\n    secrets:\n      package-signing-key: \${{ secrets.OPENSTRUCT_PACKAGE_KEY }}\n      distribution-token: \${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}\n${product.id === 'launcher' ? '      tauri-signing-key: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}\n' : ''}`;
-}
 for (const product of products) {
   const repo = api(`repos/${product.sourceRepo}`);
-  const sourceTree = api(
-    `repos/${product.sourceRepo}/git/trees/${encodeURIComponent(repo.default_branch)}?recursive=1`,
-  );
+  const sourceHead = api(
+    `repos/${product.sourceRepo}/git/ref/heads/${encodeURIComponent(repo.default_branch)}`,
+  ).object.sha;
+  const sourceTree = api(`repos/${product.sourceRepo}/git/trees/${sourceHead}?recursive=1`);
   assert.equal(sourceTree.truncated, false, 'Árvore de código excede o limite');
   const sourceReady = sourceTree.tree.some((file) => file.path === 'src-tauri/tauri.conf.json');
   if (!sourceReady) {
@@ -231,8 +230,13 @@ for (const product of products) {
     );
     continue;
   }
-  const changes = [{ path: '.github/workflows/release.yml', content: wrapper(product) }];
-  const packageFile = api(`repos/${product.sourceRepo}/contents/package.json`);
+  const changes = [
+    {
+      path: '.github/workflows/release.yml',
+      content: releaseWorkflow({ product, hubRepo, pinned }),
+    },
+  ];
+  const packageFile = api(`repos/${product.sourceRepo}/contents/package.json?ref=${sourceHead}`);
   const packageJson = JSON.parse(Buffer.from(packageFile.content, 'base64').toString());
   packageJson.scripts = {
     ...packageJson.scripts,
@@ -247,11 +251,19 @@ for (const product of products) {
   );
   if (product.id === 'launcher')
     changes.push({ path: 'catalog/trust.json', content: JSON.stringify(trust, null, 2) + '\n' });
+  const formattedChanges = await formatProductFiles({
+    repository: product.sourceRepo,
+    ref: sourceHead,
+    tree: sourceTree,
+    files: changes,
+  });
   putFiles(
     product.sourceRepo,
     repo.default_branch,
-    changes,
+    formattedChanges,
     'ci: connect signed OpenStruct release publishing',
+    undefined,
+    sourceHead,
   );
 }
 // workflows become available asynchronously after the first commit.

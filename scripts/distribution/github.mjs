@@ -28,9 +28,15 @@ export const api = (path, method = 'GET', body) => {
   return result ? JSON.parse(result) : null;
 };
 
-export function putFiles(repo, branch, files, message, request = api) {
+export function putFiles(repo, branch, files, message, request = api, expectedHead) {
   const encodedBranch = encodeURIComponent(branch);
   const head = request(`repos/${repo}/git/ref/heads/${encodedBranch}`).object.sha;
+  if (expectedHead)
+    assert.equal(
+      head,
+      expectedHead,
+      'O repositório mudou durante a configuração. Execute novamente para preservar as alterações mais recentes.',
+    );
   const parent = request(`repos/${repo}/git/commits/${head}`);
   const tree = request(`repos/${repo}/git/trees`, 'POST', {
     base_tree: parent.tree.sha,

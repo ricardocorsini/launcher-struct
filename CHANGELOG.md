@@ -2,6 +2,8 @@
 
 ## 0.2.0
 
+- Correção da configuração de produtos: arquivos gerados passam pelo Prettier fixado no lockfile e pelas regras do repositório de destino antes do commit. A leitura dos arquivos é vinculada a um commit para preservar alterações concorrentes.
+
 - Correção do inicializador: preserva a branch padrão do hub e usa seu nome nos endpoints e workflows. Remove a dependência de renomeação assíncrona de `master` para `main`.
 
 - Infraestrutura GitHub Releases: hub público separado, workflows reutilizáveis e configuração pelo GitHub CLI.

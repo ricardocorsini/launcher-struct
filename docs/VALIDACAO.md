@@ -6,7 +6,7 @@
 | ----------------------------------------------- | ------------------- |
 | TypeScript e build Vite                         | Aprovados           |
 | Vitest: domínio e coordenação das consultas     | 12 testes aprovados |
-| Node: assinaturas, releases, catálogo e versão  | 22 testes aprovados |
+| Node: assinaturas, releases, catálogo e versão  | 27 testes aprovados |
 | Rust: núcleo e migração para o catálogo oficial | 18 testes aprovados |
 | Playwright/Chromium                             | 8 testes aprovados  |
 | Clippy do núcleo com `-D warnings`              | Aprovado            |
@@ -16,6 +16,12 @@ O inicializador tem oito testes de regressão adicionais: hubs em `main`, `maste
 barra, criação de hub, primeiro commit, metadados atrasados após renomeação, permissões,
 renderização do workflow e referência do commit. A configuração preserva a branch existente
 e a usa nos endpoints de catálogo e updater.
+
+A geração de arquivos tem cinco testes adicionais: formatação para projetos com estilos
+diferentes, configuração por diretório, limpeza após falha do formatter, validação da versão
+do formatter e preservação de alterações concorrentes. Um teste de integração local executou
+o formatter real de cada projeto (MolaStruct: Prettier 3.6.2; launcher: 3.9.10) e confirmou
+que o workflow e o script gerados são idênticos aos arquivos aprovados nesses projetos.
 
 O teste novo da interface usa uma ponte nativa substituída apenas no ambiente de teste:
 confere a consulta ao abrir, o aviso de atualização de aplicativo e do launcher, a nova

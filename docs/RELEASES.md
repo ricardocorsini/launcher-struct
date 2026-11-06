@@ -63,6 +63,9 @@ O inicializador:
 - Publica somente as chaves públicas, a configuração, os workflows e o catálogo inicial.
 - Configura as variáveis públicas de compilação do updater do launcher.
 - Instala o workflow de release e o comando `release:version` nos produtos com código desktop.
+- Formata os arquivos gerados com a versão de Prettier do lockfile e as configurações de cada
+  produto, antes de gravar o commit. Esse passo pode baixar a versão necessária para o cache
+  do npm e exige acesso ao registro de pacotes.
 - Atualiza `catalog/trust.json` no repositório do launcher e inicia a sincronização do hub.
 - Não cria tags nem publica aplicativos automaticamente durante a configuração.
 
