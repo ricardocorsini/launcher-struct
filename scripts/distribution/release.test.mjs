@@ -3,7 +3,7 @@ import { generateKeyPairSync } from 'node:crypto';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { packageMessage, publicRaw, signBytes } from '../security.mjs';
@@ -241,7 +241,7 @@ test('coletor exige um pacote por sistema e preserva a assinatura Tauri', async 
 });
 
 test('sincronizador completo conserva o catálogo anterior em falha de API ou assinatura', async () => {
-  const dir = await mkdtemp(join(tmpdir(), 'struct-catalog-'));
+  const dir = await mkdtemp(join(tmpdir(), 'struct catalog-ç#-'));
   const f = fixture();
   const metadataUrl = `https://github.com/${f.product.releaseRepo}/releases/download/${f.release.tag_name}/openstruct-release.json`;
   f.release.assets.push({
@@ -273,7 +273,11 @@ test('sincronizador completo conserva o catálogo anterior em falha de API ou as
     const run = () =>
       spawnSync(
         process.execPath,
-        ['--import', mockPath, fileURLToPath(new URL('./sync-catalog.mjs', import.meta.url))],
+        [
+          '--import',
+          pathToFileURL(mockPath).href,
+          fileURLToPath(new URL('./sync-catalog.mjs', import.meta.url)),
+        ],
         { cwd: dir, env: { ...process.env, CATALOG_SIGNING_KEY: pem }, encoding: 'utf8' },
       );
     await writeFile(statePath, JSON.stringify({ release: f.release, envelope: f.envelope() }));

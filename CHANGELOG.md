@@ -1,5 +1,11 @@
 # Histórico de mudanças
 
+## 0.2.1
+
+- Corrige o teste de sincronização do catálogo no Windows: o módulo de preparação passado a `node --import` usa uma URL `file://`, com codificação de espaços, acentos e `#`.
+- Inclui os testes JavaScript no CI Windows antes da compilação nativa, além dos checks executados durante a publicação.
+- Prepara uma nova publicação do launcher sem modificar a tag `v0.2.0` da tentativa anterior.
+
 ## 0.2.0
 
 - Publicação por solicitação versionada ou execução manual no GitHub, com criação segura da tag e comparação das versões do frontend, Tauri e Cargo.
