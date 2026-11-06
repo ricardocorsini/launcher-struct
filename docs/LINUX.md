@@ -11,9 +11,11 @@ O atalho aponta para o AppImage aberto. Mantenha esse arquivo no local escolhido
 
 ## Ícones dos aplicativos
 
-MolaStruct usa a figura da Terra sustentando uma mola e uma fundação; ConsoloStruct usa Atlas sustentando a viga. O símbolo da OpenStruct identifica o launcher.
+MolaStruct usa a figura da Terra sustentando uma mola e uma fundação; ConsoloStruct usa Atlas sustentando a viga; ArmaduraStruct usa Hefesto trabalhando uma gaiola de armaduras, em fundo âmbar. O símbolo da OpenStruct identifica o launcher.
 
 Ao abrir a versão 0.2.3, as instalações verificadas recebem seus ícones e nomes próprios no menu, inclusive se foram feitas pela versão anterior. Os atalhos antigos criados pelo launcher são migrados para os identificadores nativos. Atalhos externos, executáveis modificados e projetos do usuário não são substituídos.
+
+A versão 0.2.4 inclui o ArmaduraStruct nesse mesmo fluxo, com migração de seu atalho genérico para `armadurastruct.desktop`.
 
 Se um ícone antigo estiver fixado no dock, remova-o dos favoritos e fixe a nova entrada encontrada no menu. O ambiente gráfico pode manter o ícone anterior em cache até encerrar a sessão e entrar novamente.
 
@@ -25,6 +27,7 @@ O launcher respeita `XDG_DATA_HOME`; no padrão Linux, utiliza:
 - `~/.local/share/icons/hicolor/256x256/apps/com.openstruct.launcher.png`: ícone do launcher.
 - `~/.local/share/applications/molasstruct.desktop`: entrada do MolaStruct.
 - `~/.local/share/applications/consolostruct.desktop`: entrada do ConsoloStruct.
+- `~/.local/share/applications/armadurastruct.desktop`: entrada do ArmaduraStruct.
 - `icon.png` dentro da pasta gerenciada de cada aplicativo: sua arte oficial.
 
 A criação do menu é feita na inicialização nativa do AppImage. Execuções de desenvolvimento e pacotes do sistema não criam uma entrada de AppImage para o launcher. Falhas na escrita dos atalhos aparecem nos avisos e não impedem sua abertura.

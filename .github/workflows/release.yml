@@ -33,12 +33,12 @@ jobs:
           RELEASE_INPUT_TAG: ${{ inputs.tag }}
   release:
     needs: prepare
-    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@225c3df61ff88c3e454c5ec23420bc324166afb3
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@22d3fad6b98daf111c66716bea38062e019f5133
     with:
       product-id: launcher
       tag: ${{ needs.prepare.outputs.tag }}
       distribution-repo: ricardocorsini/openstruct-catalog
-      tooling-ref: 225c3df61ff88c3e454c5ec23420bc324166afb3
+      tooling-ref: 22d3fad6b98daf111c66716bea38062e019f5133
     secrets:
       package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
       distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}

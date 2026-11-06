@@ -1,5 +1,11 @@
 # Histórico de mudanças
 
+## 0.2.4
+
+- ArmaduraStruct com seu ícone de Hefesto e identidade de janela nos atalhos Linux, incluindo a migração dos atalhos genéricos anteriores.
+- Preserva a integração de desktop do MolaStruct, ConsoloStruct e Launcher da versão 0.2.3.
+- Publicação dos instaladores com limites de tempo e tentativas de rede na instalação das dependências Linux.
+
 ## 0.2.3
 
 - Ícones próprios do MolaStruct e ConsoloStruct nos atalhos Linux, com migração dos atalhos antigos do launcher.

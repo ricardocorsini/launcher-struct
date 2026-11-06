@@ -37,14 +37,14 @@ jobs:
     needs: request
     permissions:
       contents: write
-    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@4de312bf7b0b7f25e5aeecd773367daf2e9ff33a
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@22d3fad6b98daf111c66716bea38062e019f5133
     with:
       product-id: armadurastruct
       tag: ${{ needs.request.outputs.tag }}
       source-repository: ricardocorsini/armadura-struct
       source-commit: ${{ needs.request.outputs.commit }}
       distribution-repo: ricardocorsini/openstruct-catalog
-      tooling-ref: 4de312bf7b0b7f25e5aeecd773367daf2e9ff33a
+      tooling-ref: 22d3fad6b98daf111c66716bea38062e019f5133
     secrets:
       package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
       distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}

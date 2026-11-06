@@ -23,6 +23,11 @@ fn identity(id: &str) -> (String, &str, &[u8]) {
             "consolostruct",
             include_bytes!("../../../public/assets/desktop/consolostruct.png"),
         ),
+        "armadurastruct" => (
+            "armadurastruct.desktop".into(),
+            "armadurastruct",
+            include_bytes!("../../../public/assets/desktop/armadurastruct.png"),
+        ),
         _ => (format!("openstruct-{id}.desktop"), id, LAUNCHER_ICON),
     }
 }
@@ -109,6 +114,7 @@ pub(crate) fn write_app_shortcut(data: &Path, item: &Installed) -> Result<PathBu
     let name = match item.app_id.as_str() {
         "molastruct" => "MolaStruct",
         "consolostruct" => "ConsoloStruct",
+        "armadurastruct" => "ArmaduraStruct",
         _ => &item.name,
     };
     ensure!(

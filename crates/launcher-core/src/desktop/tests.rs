@@ -92,6 +92,38 @@ fn each_known_product_has_distinct_artwork_and_unowned_shortcuts_are_preserved()
 }
 
 #[test]
+fn armadura_migrates_the_generic_shortcut_to_its_native_identity_and_artwork() {
+    let temp = TempDir::new().unwrap();
+    let data = temp.path().join("data");
+    let item = installed(&temp, "armadurastruct");
+    let legacy = data.join("applications/openstruct-armadurastruct.desktop");
+    fs::create_dir_all(legacy.parent().unwrap()).unwrap();
+    fs::write(
+        &legacy,
+        format!(
+            "[Desktop Entry]\nX-OpenStruct-Managed=true\nX-OpenStruct-Root={}\n",
+            item.root
+        ),
+    )
+    .unwrap();
+    let desktop = write_app_shortcut(&data, &item).unwrap();
+    assert_eq!(desktop.file_name().unwrap(), "armadurastruct.desktop");
+    let text = fs::read_to_string(&desktop).unwrap();
+    assert!(text.contains("Name=ArmaduraStruct\n"));
+    assert!(text.contains("StartupWMClass=armadurastruct\n"));
+    assert!(!legacy.exists());
+    let png = fs::read(Path::new(&item.root).join("armadurastruct/icon.png")).unwrap();
+    assert_eq!(png, identity("armadurastruct").2);
+    for other in ["launcher", "molastruct", "consolostruct"] {
+        assert_ne!(png, identity(other).2);
+    }
+    validate(&desktop);
+    assert_eq!(write_app_shortcut(&data, &item).unwrap(), desktop);
+    remove_app_shortcut(&data, &item).unwrap();
+    assert!(!desktop.exists());
+}
+
+#[test]
 fn shortcut_does_not_trust_a_changed_executable_or_follow_icon_symlinks() {
     use std::os::unix::fs::symlink;
     let temp = TempDir::new().unwrap();
