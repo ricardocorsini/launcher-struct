@@ -28,9 +28,9 @@ A interface usa a identidade OpenStruct: cobalto `#3448D1`, marfim, Sora, Inter,
 
 ## Estado desta versão
 
-**Distribuição publicada: Struct Launcher 0.2.3 — ícones próprios e menu Linux.** O catálogo assinado oferece MolaStruct 0.5.1 e ArmaduraStruct 0.1.1 para Windows e Linux. O ConsoloStruct aguarda a primeira release. O catálogo local é uma base editorial; os instaladores vêm da fonte assinada.
+**Distribuição publicada: Struct Launcher 0.2.4 — ícones próprios e menu Linux.** O catálogo assinado oferece MolaStruct 0.5.1 e ArmaduraStruct 0.1.1 para Windows e Linux. O ConsoloStruct aguarda a primeira release. O catálogo local é uma base editorial; os instaladores vêm da fonte assinada.
 
-O gerenciador nativo e os adaptadores NSIS/AppImage estão implementados. A configuração inicial usa um comando próprio, workflows reutilizáveis e catálogo assinado. Consulte o [passo a passo de GitHub Releases](docs/RELEASES.md). As chaves públicas e a fonte oficial estão em `catalog/trust.json`. O launcher exige origem autorizada, metadados válidos e assinatura reconhecida. Os [instaladores do Struct Launcher 0.2.3](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.3) já estão publicados. O [site oficial](https://www.openstruct.com.br/launcher) oferece Windows e Linux a partir do feed de atualização, separado das releases dos aplicativos.
+O gerenciador nativo e os adaptadores NSIS/AppImage estão implementados. A configuração inicial usa um comando próprio, workflows reutilizáveis e catálogo assinado. Consulte o [passo a passo de GitHub Releases](docs/RELEASES.md). As chaves públicas e a fonte oficial estão em `catalog/trust.json`. O launcher exige origem autorizada, metadados válidos e assinatura reconhecida. Os [instaladores do Struct Launcher 0.2.4](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.4) já estão publicados. O [site oficial](https://www.openstruct.com.br/launcher) oferece Windows e Linux a partir do feed de atualização, separado das releases dos aplicativos.
 
 Veja [VALIDACAO.md](docs/VALIDACAO.md) para as verificações feitas e os limites. Compilar a aplicação não substitui validar seus instaladores nos sistemas de destino.
 

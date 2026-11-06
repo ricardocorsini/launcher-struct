@@ -119,3 +119,11 @@ A [publicação 0.2.3](https://github.com/ricardocorsini/launcher-struct/actions
 O AppImage foi extraído: o ícone do launcher corresponde ao PNG usado no menu, as três artes de menu estão incorporadas ao executável e o código de registro `com.openstruct.launcher.desktop` está presente. Essa inspeção não substitui uma sessão gráfica em cada distribuição suportada.
 
 O AppImage MolaStruct 0.5.1 foi extraído e apresenta `Name=MolaStruct`, `StartupWMClass=molasstruct` e a arte oficial em 32, 128 e 256 pixels, além de `.DirIcon`. Seu hash é `d71ce7159fd220695a2f7d555ee95a24dd5f8e87df717432e1af19a540ba7da0`. O catálogo assinado inclui a versão 0.5.1; as assinaturas dos pacotes e os digests da API de releases foram conferidos. A linha de desenvolvimento 0.7.0 continua preservada.
+
+### Integração ArmaduraStruct — Launcher 0.2.4
+
+O [CI 0.2.4](https://github.com/ricardocorsini/launcher-struct/actions/runs/42288316870) e a [publicação Windows/Linux](https://github.com/ricardocorsini/launcher-struct/actions/runs/42288317764) passaram. O núcleo Linux executou 26 testes, incluindo a migração do atalho genérico do ArmaduraStruct para sua identidade nativa e arte de Hefesto. Também passaram os testes de interface, os testes nativos Windows, a formatação e o Clippy.
+
+Os dois instaladores publicados foram baixados: seus tamanhos e SHA-256 correspondem ao manifesto assinado e aos digests da API de releases. O AppImage foi extraído e contém as quatro artes nativas (ArmaduraStruct, MolaStruct, ConsoloStruct e Launcher), além da identidade `armadurastruct.desktop`. O ícone do ArmaduraStruct incorporado é idêntico ao PNG de 256 pixels usado no seu próprio instalador.
+
+O catálogo público teve sua assinatura verificada e mantém ArmaduraStruct 0.1.1 e MolaStruct 0.5.1/0.5.0. O feed do Launcher anuncia 0.2.4; as URLs e assinaturas Tauri correspondem ao manifesto verificado. A página pública do ArmaduraStruct foi conferida com os dois links de download e o encaminhamento para o Launcher. Essa verificação de pacotes e atalhos não substitui testes gráficos em cada distribuição Linux.

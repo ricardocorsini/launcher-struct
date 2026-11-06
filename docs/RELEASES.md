@@ -7,7 +7,9 @@
 - O catálogo oficial já inclui essa versão; as assinaturas e os hashes dos dois downloads foram conferidos.
 - ConsoloStruct 0.6.0 conectado à mesma esteira. Seu código já foi enviado durante esta integração. A tag não foi criada porque o mantenedor ainda está revisando a primeira versão.
 - As chaves públicas de produção estão configuradas. As chaves privadas permanecem nos Secrets e no backup do mantenedor.
-- [Struct Launcher 0.2.3 publicado](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.3), com Windows/Linux e feed oficial. Inclui ícones próprios dos produtos, migração dos atalhos e registro do AppImage no menu Linux. O CI nativo e a publicação passaram nos dois sistemas.
+- [Struct Launcher 0.2.4 publicado](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.4), com Windows/Linux e feed oficial. Inclui ícones próprios do MolaStruct, ConsoloStruct e ArmaduraStruct, migração dos atalhos e registro do AppImage no menu Linux. O CI nativo e a publicação passaram nos dois sistemas.
+
+- [ArmaduraStruct 0.1.1 publicado](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/armadurastruct-v0.1.1), com instaladores Windows/Linux assinados e incluídos no catálogo. A publicação central usa o commit imutável `c600f972c58e8acc7e951f40df5e20cef62afb13` do repositório público do aplicativo.
 
 ## O processo adotado
 
