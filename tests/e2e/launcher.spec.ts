@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.product-card')).toHaveCount(2);
+  await expect(page.locator('.product-card')).toHaveCount(3);
 });
 test('catálogo real, detalhes e nenhum instalador fictício', async ({ page }) => {
   await expect(
@@ -31,7 +31,7 @@ test('busca com acentos, filtros e ausência de resultados', async ({ page }) =>
     .fill('inexistente');
   await expect(page.getByRole('heading', { name: 'Nenhum aplicativo encontrado' })).toBeVisible();
   await page.getByRole('button', { name: 'Limpar filtros' }).click();
-  await expect(page.locator('.product-card')).toHaveCount(2);
+  await expect(page.locator('.product-card')).toHaveCount(3);
   await page.getByRole('combobox', { name: 'Todas as áreas' }).selectOption('Concreto armado');
   await expect(page.locator('.product-title')).toHaveText('ConsoloStruct');
 });
@@ -50,12 +50,12 @@ test('lista persistente e menu de versões', async ({ page }) => {
 test('oculta e restaura aplicativos pelas configurações', async ({ page }) => {
   await page.getByLabel('Opções do aplicativo: MolaStruct').click();
   await page.getByRole('button', { name: 'Ocultar aplicativo', exact: true }).click();
-  await expect(page.locator('.product-card')).toHaveCount(1);
+  await expect(page.locator('.product-card')).toHaveCount(2);
   await page.getByRole('button', { name: 'Configurações', exact: true }).click();
   await page.getByRole('button', { name: 'Mostrar todos', exact: true }).click();
   await page.getByRole('button', { name: 'Salvar configurações' }).click();
   await page.getByRole('button', { name: 'Todos os aplicativos', exact: false }).first().click();
-  await expect(page.locator('.product-card')).toHaveCount(2);
+  await expect(page.locator('.product-card')).toHaveCount(3);
 });
 test('tema, idioma e atalhos funcionam e persistem', async ({ page }) => {
   await page.getByRole('button', { name: 'Configurações', exact: true }).click();
@@ -91,4 +91,18 @@ test('layouts não criam rolagem horizontal', async ({ page }) => {
       true,
     );
   }
+});
+
+test('ArmaduraStruct tem identidade, detalhes e categoria próprios', async ({ page }) => {
+  await page.getByRole('combobox', { name: 'Todas as áreas' }).selectOption('Detalhamento');
+  await expect(page.locator('.product-title')).toHaveText('ArmaduraStruct');
+  await expect(page.locator('.product-card .product-icon img')).toHaveAttribute(
+    'src',
+    '/assets/armadurastruct-hephaestus.webp',
+  );
+  await page.getByRole('button', { name: 'ArmaduraStruct', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'ArmaduraStruct' })).toBeVisible();
+  await expect(
+    page.getByRole('dialog').getByText('Máscaras DXF e DWG processadas localmente'),
+  ).toBeVisible();
 });

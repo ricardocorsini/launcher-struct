@@ -1,3 +1,9 @@
+## 0.2.2
+
+- ArmaduraStruct no catálogo local, com ícone próprio e categoria Detalhamento.
+- Publicação central de pacotes assinados do ArmaduraStruct a partir de tag e commit imutáveis.
+- Catálogo e assinatura compatíveis com os Launchers 0.2.x existentes.
+
 # Histórico de mudanças
 
 ## 0.2.1

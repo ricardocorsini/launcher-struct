@@ -7,6 +7,7 @@ import {
   filterApps,
   needsUpdate,
   percentage,
+  iconPath,
 } from '../src/domain';
 import type { Catalog, Product, Release, Snapshot } from '../src/types';
 
@@ -112,7 +113,10 @@ describe('catálogo e progresso', () => {
   it('combina busca, categoria e aplicativos ocultos', () => {
     const s = snapshot();
     s.settings.hiddenApps = ['molastruct'];
-    expect(filterApps(s, 'all', '', 'all', 'az')).toHaveLength(1);
+    expect(filterApps(s, 'all', '', 'all', 'az').map((app) => app.id)).toEqual([
+      'armadurastruct',
+      'consolostruct',
+    ]);
     expect(filterApps(s, 'all', '', 'Fundações', 'az')).toHaveLength(0);
     expect(filterApps(s, 'all', '', 'Fundações', 'az', true)).toHaveLength(1);
   });
@@ -125,4 +129,10 @@ describe('catálogo e progresso', () => {
     expect(percentage({ total: 0, received: 0 } as never)).toBe(0);
     expect(bytes(1048576)).toBe('1 MB');
   });
+});
+
+it('usa a identidade do ArmaduraStruct com o catálogo v1 compatível', () => {
+  const app = bundled.apps.find((item) => item.id === 'armadurastruct')!;
+  expect(app.icon).toBe('openstruct-mark');
+  expect(iconPath(app)).toBe('/assets/armadurastruct-hephaestus.webp');
 });

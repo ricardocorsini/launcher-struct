@@ -572,6 +572,11 @@ export default function App() {
                         src="/assets/molastruct-gaia.webp"
                         alt=""
                       />
+                      <img
+                        className="hero-app hero-app-amber"
+                        src="/assets/armadurastruct-hephaestus.webp"
+                        alt=""
+                      />
                       <span className="art-label mono">
                         ABERTO PARA
                         <br />

@@ -39,10 +39,16 @@ const products = [
   { id: 'molastruct', name: 'MolaStruct', sourceRepo: 'ricardocorsini/mola-struct' },
   { id: 'consolostruct', name: 'ConsoloStruct', sourceRepo: 'ricardocorsini/consolo-struct' },
   { id: 'launcher', name: 'Struct Launcher', sourceRepo: launcherRepo },
+  {
+    id: 'armadurastruct',
+    name: 'ArmaduraStruct',
+    sourceRepo: 'ricardocorsini/armadura-struct',
+    publisherRepo: launcherRepo,
+  },
 ].map((product) => ({
   ...product,
-  releaseRepo: product.id === 'launcher' ? hubRepo : product.sourceRepo,
-  keyId: `${product.id}-packages-v1`,
+  releaseRepo: product.id === 'launcher' || product.publisherRepo ? hubRepo : product.sourceRepo,
+  keyId: product.publisherRepo ? 'launcher-packages-v1' : `${product.id}-packages-v1`,
 }));
 for (const product of products) {
   const repo = api(`repos/${product.sourceRepo}`);
@@ -148,7 +154,7 @@ const variable = (repo, name, value) =>
   gh(['variable', 'set', name, '--repo', repo, '--body', value]);
 // Validate ALL public keys before changing any secret or public configuration.
 secret(hubRepo, 'OPENSTRUCT_CATALOG_KEY', catalogPem);
-for (const product of products)
+for (const product of products.filter((item) => !item.publisherRepo))
   secret(product.sourceRepo, 'OPENSTRUCT_PACKAGE_KEY', privateKeys[product.id]);
 secret(launcherRepo, 'TAURI_SIGNING_PRIVATE_KEY', tauriKey);
 variable(launcherRepo, 'STRUCT_LAUNCHER_UPDATE_URL', updateUrl);
@@ -156,7 +162,7 @@ variable(launcherRepo, 'STRUCT_LAUNCHER_UPDATE_PUBKEY', tauriPublicKey);
 const mirrorToken = process.env.OPENSTRUCT_DISTRIBUTION_TOKEN;
 if (mirrorToken) {
   assert.ok(mirrorToken.trim());
-  for (const product of products)
+  for (const product of products.filter((item) => !item.publisherRepo))
     secret(product.sourceRepo, 'OPENSTRUCT_DISTRIBUTION_TOKEN', mirrorToken);
 }
 const files = [];
@@ -176,6 +182,7 @@ for (const path of ['scripts/security.mjs', 'LICENSE'])
   files.push({ path, content: await readFile(join(root, path), 'utf8') });
 for (const name of [
   'release-lib.mjs',
+  'source.mjs',
   'github.mjs',
   'preflight.mjs',
   'prepare.mjs',
@@ -217,6 +224,7 @@ const pinned = putFiles(
   'feat: configure signed OpenStruct distribution',
 );
 for (const product of products) {
+  if (product.publisherRepo) continue; // Dedicated central publisher workflow, no app secrets.
   const repo = api(`repos/${product.sourceRepo}`);
   const sourceHead = api(
     `repos/${product.sourceRepo}/git/ref/heads/${encodeURIComponent(repo.default_branch)}`,

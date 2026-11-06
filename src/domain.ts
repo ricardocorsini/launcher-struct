@@ -91,5 +91,8 @@ export function bytes(value: number, locale = 'pt-BR'): string {
 export function percentage(job: Job): number {
   return job.total ? Math.max(0, Math.min(100, Math.round((job.received / job.total) * 100))) : 0;
 }
+// Keep the catalog's legacy icon enum compatible with installed launchers.
 export const iconPath = (app: Product) =>
-  `/assets/${['consolostruct-atlas', 'molastruct-gaia'].includes(app.icon) ? `${app.icon}.webp` : 'openstruct-mark.svg'}`;
+  app.id === 'armadurastruct'
+    ? '/assets/armadurastruct-hephaestus.webp'
+    : `/assets/${['consolostruct-atlas', 'molastruct-gaia'].includes(app.icon) ? `${app.icon}.webp` : 'openstruct-mark.svg'}`;

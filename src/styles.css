@@ -2454,3 +2454,11 @@ kbd {
     width: 100%;
   }
 }
+
+.hero-app-amber {
+  width: 84px;
+  height: 84px;
+  right: 23px;
+  top: 28px;
+  transform: rotate(8deg);
+}

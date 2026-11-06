@@ -1,0 +1,50 @@
+name: Publish ArmaduraStruct
+on:
+  push:
+    branches: [master]
+    paths: [.github/armadura-release-request.json]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag já preparada no ArmaduraStruct (ex.: v0.1.1)'
+        type: string
+        required: true
+      commit:
+        description: 'SHA completo do código ArmaduraStruct correspondente à tag'
+        type: string
+        required: true
+permissions:
+  contents: read
+jobs:
+  request:
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.request.outputs.tag }}
+      commit: ${{ steps.request.outputs.commit }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - id: request
+        run: node scripts/armadura-release-request.mjs
+        env:
+          RELEASE_INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_INPUT_COMMIT: ${{ inputs.commit }}
+  release:
+    needs: request
+    permissions:
+      contents: write
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@4de312bf7b0b7f25e5aeecd773367daf2e9ff33a
+    with:
+      product-id: armadurastruct
+      tag: ${{ needs.request.outputs.tag }}
+      source-repository: ricardocorsini/armadura-struct
+      source-commit: ${{ needs.request.outputs.commit }}
+      distribution-repo: ricardocorsini/openstruct-catalog
+      tooling-ref: 4de312bf7b0b7f25e5aeecd773367daf2e9ff33a
+    secrets:
+      package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
+      distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}

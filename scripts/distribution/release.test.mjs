@@ -64,7 +64,7 @@ function fixture(version = '0.3.0', id = 'molastruct') {
     releaseRepo: 'owner/public-releases',
   };
   const tag = `v${version}`;
-  const releaseTag = id === 'launcher' ? `launcher-${tag}` : tag;
+  const releaseTag = `${id}-${tag}`;
   const assets = ['windows', 'linux'].map((platform) => {
     const name = `${id}-${version}-${platform}${platform === 'windows' ? '.exe' : '.AppImage'}`;
     const asset = {
@@ -356,4 +356,21 @@ test('comando de versão sincroniza frontend, Tauri, Rust e lockfiles sem gerar 
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test('mesma identidade do publicador não permite trocar pacotes entre aplicativos', () => {
+  const f = fixture('0.1.1', 'armadurastruct');
+  f.product.publisherRepo = 'owner/launcher';
+  f.manifest.publisherRepo = 'owner/launcher';
+  f.manifest.sourceCommit = 'b'.repeat(40);
+  assert.equal(verifyRelease(f.envelope(), f.release, f.product, trust).version, '0.1.1');
+  const original = f.manifest.assets[0].signature;
+  f.manifest.assets[0].signature = signBytes(
+    packageMessage('launcher', '0.1.1', f.manifest.assets[0]),
+    pem,
+  );
+  assert.throws(() => verifyRelease(f.envelope(), f.release, f.product, trust));
+  f.manifest.assets[0].signature = original;
+  f.manifest.publisherRepo = 'owner/other';
+  assert.throws(() => verifyRelease(f.envelope(), f.release, f.product, trust));
 });

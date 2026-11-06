@@ -40,7 +40,7 @@ fn bundled_catalog_is_valid_and_has_no_fictional_downloads() {
     let catalog: Catalog =
         serde_json::from_str(include_str!("../../../catalog/bundled.json")).unwrap();
     catalog.validate(&trust).unwrap();
-    assert_eq!(catalog.apps.len(), 2);
+    assert_eq!(catalog.apps.len(), 3);
     assert!(catalog.apps.iter().all(|app| app.releases.is_empty()));
 }
 

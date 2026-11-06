@@ -39,3 +39,11 @@ No Windows, a assinatura Tauri ou a assinatura Ed25519 dos pacotes gerenciados n
 - Arquivos de versão já publicados não são substituídos por outros bytes com o mesmo número.
 
 Use o inicializador e o roteiro em [RELEASES.md](RELEASES.md) para configurar a distribuição e publicar novas versões.
+
+## ArmaduraStruct e publicador central
+
+O fluxo `Publish ArmaduraStruct` usa o publicador deste repositório, a chave de pacotes `OPENSTRUCT_PACKAGE_KEY` e o token de distribuição já configurados. O código vem exclusivamente de `ricardocorsini/armadura-struct`, com tag e SHA completos e correspondentes. O hub permite explicitamente este publicador em `distribution.json`. Os builds não recebem a chave de pacotes nem o token de escrita. A assinatura e a publicação são feitas em outro job, executando somente tooling fixado por SHA do hub.
+
+As releases do aplicativo ficam no hub público com prefixo `armadurastruct-v`. A assinatura de pacotes usa `launcher-packages-v1`; seu conteúdo vincula o ID de aplicativo, a versão, a plataforma e o hash, impedindo reaproveitar uma assinatura entre produtos. A chave do catálogo permanece separada. Isso conserva a compatibilidade dos Launchers já instalados, sem distribuir nova chave ou credencial ao repositório do aplicativo.
+
+Para solicitar uma versão, prepare a tag no repositório do ArmaduraStruct e execute o workflow deste Launcher com `tag` e `commit`, ou altere `.github/armadura-release-request.json`. A publicação só é liberada após os dois builds. O ícone genérico do esquema v1 é resolvido localmente para a gravura de Hefesto por `iconPath` a partir do ID `armadurastruct`.
