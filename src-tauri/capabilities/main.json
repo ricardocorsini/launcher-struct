@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Janela principal: operações restritas do launcher e escolha de uma pasta.",
+  "windows": ["main"],
+  "permissions": ["core:default", "dialog:allow-open"]
+}

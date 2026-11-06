@@ -1,0 +1,16 @@
+node_modules/
+dist/
+target/
+.DS_Store
+.env*
+!.env.example
+*.pem
+*.key
+*.pfx
+private-keys/
+playwright-report/
+test-results/
+.local/
+*.log
+*.tsbuildinfo
+src-tauri/gen/

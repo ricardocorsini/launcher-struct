@@ -1,0 +1,14 @@
+{
+  "catalogUrl": null,
+  "keys": {},
+  "allowedHosts": [
+    "github.com",
+    "raw.githubusercontent.com",
+    "release-assets.githubusercontent.com",
+    "objects.githubusercontent.com",
+    "ricardocorsini.github.io",
+    "openstruct.com.br",
+    "www.openstruct.com.br",
+    "releases.openstruct.com.br"
+  ]
+}
