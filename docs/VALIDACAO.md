@@ -111,3 +111,11 @@ Validar instalação limpa, abertura, atualização da versão anterior, atalhos
 - O teste GLib abre um executável real por `.desktop` e confere o caminho exato com espaços, acentos e caracteres reservados. `desktop-file-validate` conferiu as entradas geradas.
 - O PNG do MolaStruct no menu corresponde à redução LANCZOS do original de 1254 × 1254 pixels do Drive.
 - O dock ainda pode conservar favoritos e ícones em cache do ambiente gráfico.
+
+### Pacotes publicados e conferidos em 06/11/2026
+
+A [publicação 0.2.3](https://github.com/ricardocorsini/launcher-struct/actions/runs/42286724811) e o [CI Windows/Linux](https://github.com/ricardocorsini/launcher-struct/actions/runs/42286723614) passaram. Os artefatos Windows/Linux foram baixados e seus SHA-256 e tamanhos conferem com os arquivos publicados no hub. As assinaturas Tauri no feed correspondem aos arquivos `.sig` dos artefatos.
+
+O AppImage foi extraído: o ícone do launcher corresponde ao PNG usado no menu, as três artes de menu estão incorporadas ao executável e o código de registro `com.openstruct.launcher.desktop` está presente. Essa inspeção não substitui uma sessão gráfica em cada distribuição suportada.
+
+O AppImage MolaStruct 0.5.1 foi extraído e apresenta `Name=MolaStruct`, `StartupWMClass=molasstruct` e a arte oficial em 32, 128 e 256 pixels, além de `.DirIcon`. Seu hash é `d71ce7159fd220695a2f7d555ee95a24dd5f8e87df717432e1af19a540ba7da0`. O catálogo assinado inclui a versão 0.5.1; as assinaturas dos pacotes e os digests da API de releases foram conferidos. A linha de desenvolvimento 0.7.0 continua preservada.

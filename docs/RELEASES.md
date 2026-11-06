@@ -2,11 +2,12 @@
 
 ## Estado em 06/11/2026
 
-- [MolaStruct 0.5.0 publicado](https://github.com/ricardocorsini/mola-struct/releases/tag/v0.5.0), com Windows x86_64 (NSIS), Linux x86_64 (AppImage), SHA-256 e manifesto assinado. Fonte imutável: `9cc4c390fa985ba25d34b99c912d25cb7d8dd8b9`.
+- [MolaStruct 0.5.1 publicado](https://github.com/ricardocorsini/mola-struct/releases/tag/v0.5.1), com Windows x86_64 (NSIS), Linux x86_64 (AppImage), SHA-256 e manifesto assinado. Fonte imutável: `5d22f0626f8feb709a8b3b8301babd9985667d01`.
+- A correção 0.5.1 aplica nome e arte oficiais sobre a base publicada 0.5.0, com 105 testes JavaScript aprovados. A linha 0.7.0 recebeu a mesma identidade e conserva suas alterações de cálculo.
 - O catálogo oficial já inclui essa versão; as assinaturas e os hashes dos dois downloads foram conferidos.
 - ConsoloStruct 0.6.0 conectado à mesma esteira. Seu código já foi enviado durante esta integração. A tag não foi criada porque o mantenedor ainda está revisando a primeira versão.
 - As chaves públicas de produção estão configuradas. As chaves privadas permanecem nos Secrets e no backup do mantenedor.
-- [Struct Launcher 0.2.1 publicado](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.1), com Windows/Linux e feed oficial. A tentativa `v0.2.0` foi preservada; a correção de importação ESM no teste Windows entrou na `v0.2.1`.
+- [Struct Launcher 0.2.3 publicado](https://github.com/ricardocorsini/openstruct-catalog/releases/tag/launcher-v0.2.3), com Windows/Linux e feed oficial. Inclui ícones próprios dos produtos, migração dos atalhos e registro do AppImage no menu Linux. O CI nativo e a publicação passaram nos dois sistemas.
 
 ## O processo adotado
 
