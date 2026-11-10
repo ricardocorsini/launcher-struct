@@ -92,7 +92,8 @@ export function percentage(job: Job): number {
   return job.total ? Math.max(0, Math.min(100, Math.round((job.received / job.total) * 100))) : 0;
 }
 // Keep the catalog's legacy icon enum compatible with installed launchers.
-export const iconPath = (app: Product) =>
-  app.id === 'armadurastruct'
-    ? '/assets/armadurastruct-hephaestus.webp'
-    : `/assets/${['consolostruct-atlas', 'molastruct-gaia'].includes(app.icon) ? `${app.icon}.webp` : 'openstruct-mark.svg'}`;
+export const iconPath = (app: Product) => {
+  if (app.id === 'geosptstruct') return '/assets/geosptstruct-athena.webp';
+  if (app.id === 'armadurastruct') return '/assets/armadurastruct-hephaestus.webp';
+  return `/assets/${['consolostruct-atlas', 'molastruct-gaia'].includes(app.icon) ? `${app.icon}.webp` : 'openstruct-mark.svg'}`;
+};

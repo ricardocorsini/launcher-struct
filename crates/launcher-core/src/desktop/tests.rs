@@ -92,6 +92,44 @@ fn each_known_product_has_distinct_artwork_and_unowned_shortcuts_are_preserved()
 }
 
 #[test]
+fn geospt_migrates_its_managed_shortcut_with_native_identity_and_own_artwork() {
+    let temp = TempDir::new().unwrap();
+    let data = temp.path().join("menu");
+    let mut item = installed(&temp, "geosptstruct");
+    item.name = "GeoSPT".into();
+    let legacy = data.join("applications/openstruct-geosptstruct.desktop");
+    fs::create_dir_all(legacy.parent().unwrap()).unwrap();
+    fs::write(
+        &legacy,
+        format!(
+            "[Desktop Entry]\nX-OpenStruct-Managed=true\nX-OpenStruct-Root={}\n",
+            item.root
+        ),
+    )
+    .unwrap();
+    let executable_hash = digest(Path::new(&item.executable)).unwrap();
+    let desktop = write_app_shortcut(&data, &item).unwrap();
+    assert_eq!(desktop.file_name().unwrap(), "geosptstruct.desktop");
+    let text = fs::read_to_string(&desktop).unwrap();
+    assert!(text.contains("Name=GeoSPT\n"));
+    assert!(text.contains("StartupWMClass=geosptstruct\n"));
+    assert!(!legacy.exists());
+    let png = fs::read(Path::new(&item.root).join("geosptstruct/icon.png")).unwrap();
+    assert_eq!(png, identity("geosptstruct").2);
+    for other in ["launcher", "consolostruct", "molastruct", "armadurastruct"] {
+        assert_ne!(png, identity(other).2);
+    }
+    assert_eq!(
+        digest(Path::new(&item.executable)).unwrap(),
+        executable_hash
+    );
+    validate(&desktop);
+    assert_eq!(write_app_shortcut(&data, &item).unwrap(), desktop);
+    remove_app_shortcut(&data, &item).unwrap();
+    assert!(!desktop.exists());
+}
+
+#[test]
 fn armadura_migrates_the_generic_shortcut_to_its_native_identity_and_artwork() {
     let temp = TempDir::new().unwrap();
     let data = temp.path().join("data");

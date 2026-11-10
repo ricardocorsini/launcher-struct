@@ -31,3 +31,7 @@ O launcher respeita `XDG_DATA_HOME`; no padrão Linux, utiliza:
 - `icon.png` dentro da pasta gerenciada de cada aplicativo: sua arte oficial.
 
 A criação do menu é feita na inicialização nativa do AppImage. Execuções de desenvolvimento e pacotes do sistema não criam uma entrada de AppImage para o launcher. Falhas na escrita dos atalhos aparecem nos avisos e não impedem sua abertura.
+
+## Identidade do GeoSPT
+
+O GeoSPT usa a arte de Atena e estaca cilíndrica, fornecida na identidade visual do app. O menu nativo cria `geosptstruct.desktop`, com `StartupWMClass=geosptstruct` e PNG próprio de 256 pixels. Ao iniciar esta versão do Launcher, atalhos gerenciados anteriores são migrados sem alterar o AppImage instalado; atalhos externos são preservados. A arte da biblioteca é resolvida pelo ID `geosptstruct`, mantendo `openstruct-mark` no esquema do catálogo para compatibilidade com versões anteriores.

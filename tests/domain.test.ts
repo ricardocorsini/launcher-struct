@@ -145,7 +145,8 @@ it('recebe o GeoSPT sem oferecer um pacote antes da publicação assinada', () =
   const s = snapshot();
   const app = s.catalog.apps.find((item) => item.id === 'geosptstruct')!;
   expect(app.repository).toBe('https://github.com/itanervale/GEOSPT-STRUCT');
-  expect(iconPath(app)).toBe('/assets/openstruct-mark.svg');
+  expect(app.icon).toBe('openstruct-mark');
+  expect(iconPath(app)).toBe('/assets/geosptstruct-athena.webp');
   expect(appStatus(app, s)).toBe('unpublished');
   expect(compatibleReleases(app, s)).toEqual([]);
 });

@@ -28,6 +28,11 @@ fn identity(id: &str) -> (String, &str, &[u8]) {
             "armadurastruct",
             include_bytes!("../../../public/assets/desktop/armadurastruct.png"),
         ),
+        "geosptstruct" => (
+            "geosptstruct.desktop".into(),
+            "geosptstruct",
+            include_bytes!("../../../public/assets/desktop/geosptstruct.png"),
+        ),
         _ => (format!("openstruct-{id}.desktop"), id, LAUNCHER_ICON),
     }
 }
@@ -115,6 +120,7 @@ pub(crate) fn write_app_shortcut(data: &Path, item: &Installed) -> Result<PathBu
         "molastruct" => "MolaStruct",
         "consolostruct" => "ConsoloStruct",
         "armadurastruct" => "ArmaduraStruct",
+        "geosptstruct" => "GeoSPT",
         _ => &item.name,
     };
     ensure!(
