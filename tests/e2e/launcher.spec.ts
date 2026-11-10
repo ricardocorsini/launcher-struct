@@ -107,7 +107,7 @@ test('ArmaduraStruct tem identidade, detalhes e categoria próprios', async ({ p
   ).toBeVisible();
 });
 
-test('GeoSPT aparece em Fundações sem anunciar instaladores ainda não publicados', async ({
+test('GeoSPT usa a arte oficial em Fundações e mantém o fallback sem pacotes', async ({
   page,
 }) => {
   await page
@@ -116,8 +116,9 @@ test('GeoSPT aparece em Fundações sem anunciar instaladores ainda não publica
   await expect(page.locator('.product-card')).toHaveCount(1);
   await expect(page.locator('.product-card .product-icon img')).toHaveAttribute(
     'src',
-    '/assets/openstruct-mark.svg',
+    '/assets/geosptstruct-athena.webp',
   );
+  await expect(page.locator('.product-card .product-icon img')).toHaveJSProperty('naturalWidth', 768);
   await page.getByRole('button', { name: 'GeoSPT', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'GeoSPT' });
   await expect(dialog).toBeVisible();
