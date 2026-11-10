@@ -107,9 +107,7 @@ test('ArmaduraStruct tem identidade, detalhes e categoria próprios', async ({ p
   ).toBeVisible();
 });
 
-test('GeoSPT usa a arte oficial em Fundações e mantém o fallback sem pacotes', async ({
-  page,
-}) => {
+test('GeoSPT usa a arte oficial em Fundações e mantém o fallback sem pacotes', async ({ page }) => {
   await page
     .getByRole('textbox', { name: 'Buscar aplicativos por nome ou descrição' })
     .fill('GeoSPT');
@@ -118,7 +116,10 @@ test('GeoSPT usa a arte oficial em Fundações e mantém o fallback sem pacotes'
     'src',
     '/assets/geosptstruct-athena.webp',
   );
-  await expect(page.locator('.product-card .product-icon img')).toHaveJSProperty('naturalWidth', 768);
+  await expect(page.locator('.product-card .product-icon img')).toHaveJSProperty(
+    'naturalWidth',
+    768,
+  );
   await page.getByRole('button', { name: 'GeoSPT', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'GeoSPT' });
   await expect(dialog).toBeVisible();
