@@ -40,8 +40,18 @@ fn bundled_catalog_is_valid_and_has_no_fictional_downloads() {
     let catalog: Catalog =
         serde_json::from_str(include_str!("../../../catalog/bundled.json")).unwrap();
     catalog.validate(&trust).unwrap();
-    assert_eq!(catalog.apps.len(), 3);
+    assert_eq!(catalog.apps.len(), 4);
     assert!(catalog.apps.iter().all(|app| app.releases.is_empty()));
+    let geospt = catalog
+        .apps
+        .iter()
+        .find(|app| app.id == "geosptstruct")
+        .unwrap();
+    assert_eq!(
+        geospt.repository,
+        "https://github.com/itanervale/GEOSPT-STRUCT"
+    );
+    assert_eq!(geospt.icon, "openstruct-mark");
 }
 
 #[test]

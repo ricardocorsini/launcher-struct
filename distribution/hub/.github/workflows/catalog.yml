@@ -23,6 +23,7 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: node --test scripts/distribution/*.test.mjs
       - run: node scripts/distribution/sync-catalog.mjs
         env:
           GH_TOKEN: ${{ github.token }}

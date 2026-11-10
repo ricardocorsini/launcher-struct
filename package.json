@@ -15,7 +15,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
-    "check": "tsc -b && vitest run && node --test scripts/security.test.mjs scripts/distribution/release.test.mjs scripts/distribution/source.test.mjs scripts/distribution/hub.test.mjs scripts/distribution/product-files.test.mjs scripts/distribution/request-release.test.mjs && node scripts/validate-catalog.mjs catalog/bundled.json",
+    "check": "tsc -b && vitest run && node --test scripts/security.test.mjs scripts/distribution/*.test.mjs && node scripts/validate-catalog.mjs catalog/bundled.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "tauri": "tauri",

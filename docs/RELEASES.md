@@ -272,3 +272,30 @@ mais recentes de cada app. Revise a política antes de ultrapassar 500 releases 
   atualização entre versões reais só poderá ser testada após existir uma segunda release.
 
 As releases publicadas são imutáveis. Alterações posteriores no código entram na próxima versão.
+
+## GeoSPT — publicador central
+
+O código permanece em `itanervale/GEOSPT-STRUCT`. O produto `geosptstruct` usa a identidade de assinatura do publicador (`launcher-packages-v1`) e publica os instaladores em `ricardocorsini/openstruct-catalog`, sob a tag `geosptstruct-vVERSÃO`.
+
+O workflow **Build or publish GeoSPT** recebe uma versão e um SHA completo. A solicitação também pode ser registrada em `.github/geospt-release-request.json`, na branch `master`, com `schemaVersion`, `tag`, `commit` e `publish`.
+
+1. Comece com `publish: false`. O workflow confere os três manifests, compila o SHA original nos runners Windows/Linux e disponibiliza NSIS, AppImage e `.deb` como artefatos por 14 dias. Esses jobs não recebem chaves de assinatura nem token de publicação. A tag de origem ainda não precisa existir para essa conferência.
+2. Instale e confira os pacotes: abertura, sete abas, Balsas, importar/exportar JSON, XLSX, manual e impressão dos relatórios. O modo de compilação não publica uma versão nem torna esses artefatos downloads do Launcher.
+3. Prepare a tag no repositório original, usando **Prepare release tag** com a mesma versão e o SHA validado. Ser colaborador permite essa operação pelo GitHub; a integração conectada precisa de autorização separada para gravar naquele repositório.
+4. Solicite a publicação com `publish: true`, preservando tag e commit. O workflow reutilizável do hub está fixado por SHA e faz a conferência remota da tag antes de compilar. Uma divergência impede a publicação.
+5. O publicador produz e assina Windows NSIS e Linux AppImage juntos, publica `openstruct-release.json` e `SHA256SUMS.txt`, e solicita a sincronização do catálogo. O `.deb` é adicional e permanece disponível no modo de compilação, conforme o contrato atual de distribuição.
+
+Exemplo de publicação, somente depois da validação e da preparação da tag:
+
+```json
+{
+  "schemaVersion": 1,
+  "tag": "v2.0.7",
+  "commit": "SHA_COMPLETO_VALIDADO",
+  "publish": true
+}
+```
+
+O Launcher já trata os aplicativos por ID e recebe o GeoSPT pelo catálogo assinado, sem exigir uma mudança em seu núcleo. O símbolo genérico OpenStruct é usado nesta etapa. Arte e página própria no site serão tratadas separadamente.
+
+O inicializador de distribuição inclui o GeoSPT como produto delegado. Ele não exige administração sobre a fonte pública do Itaner e não instala Secrets nem workflows naquele repositório.

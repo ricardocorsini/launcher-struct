@@ -45,6 +45,12 @@ const products = [
     sourceRepo: 'ricardocorsini/armadura-struct',
     publisherRepo: launcherRepo,
   },
+  {
+    id: 'geosptstruct',
+    name: 'GeoSPT',
+    sourceRepo: 'itanervale/GEOSPT-STRUCT',
+    publisherRepo: launcherRepo,
+  },
 ].map((product) => ({
   ...product,
   releaseRepo: product.id === 'launcher' || product.publisherRepo ? hubRepo : product.sourceRepo,
@@ -52,7 +58,10 @@ const products = [
 }));
 for (const product of products) {
   const repo = api(`repos/${product.sourceRepo}`);
-  assert.ok(repo.permissions?.admin, `Acesso de administrador necessário: ${product.sourceRepo}`);
+  // Fontes públicas com publicação delegada não recebem Secrets nem workflows
+  // deste inicializador. A administração é necessária só nos publicadores diretos.
+  if (!product.publisherRepo)
+    assert.ok(repo.permissions?.admin, `Acesso de administrador necessário: ${product.sourceRepo}`);
   if (product.id !== 'launcher')
     assert.equal(repo.private, false, 'Os instaladores dos apps precisam ser públicos');
 }
@@ -183,6 +192,7 @@ for (const path of ['scripts/security.mjs', 'LICENSE'])
 for (const name of [
   'release-lib.mjs',
   'source.mjs',
+  'source.test.mjs',
   'github.mjs',
   'preflight.mjs',
   'prepare.mjs',

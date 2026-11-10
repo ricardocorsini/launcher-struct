@@ -108,6 +108,7 @@ describe('seleção de pacotes e versões', () => {
 describe('catálogo e progresso', () => {
   it('busca sem distinção de acentos', () =>
     expect(filterApps(snapshot(), 'all', 'fundacoes', 'all', 'az').map((a) => a.id)).toEqual([
+      'geosptstruct',
       'molastruct',
     ]));
   it('combina busca, categoria e aplicativos ocultos', () => {
@@ -116,9 +117,12 @@ describe('catálogo e progresso', () => {
     expect(filterApps(s, 'all', '', 'all', 'az').map((app) => app.id)).toEqual([
       'armadurastruct',
       'consolostruct',
+      'geosptstruct',
     ]);
-    expect(filterApps(s, 'all', '', 'Fundações', 'az')).toHaveLength(0);
-    expect(filterApps(s, 'all', '', 'Fundações', 'az', true)).toHaveLength(1);
+    expect(filterApps(s, 'all', '', 'Fundações', 'az').map((app) => app.id)).toEqual([
+      'geosptstruct',
+    ]);
+    expect(filterApps(s, 'all', '', 'Fundações', 'az', true)).toHaveLength(2);
   });
   it('mostra instalados e atualizações a partir do inventário real', () => {
     expect(filterApps(snapshot(), 'installed', '', 'all', 'az')).toHaveLength(0);
@@ -135,4 +139,13 @@ it('usa a identidade do ArmaduraStruct com o catálogo v1 compatível', () => {
   const app = bundled.apps.find((item) => item.id === 'armadurastruct')!;
   expect(app.icon).toBe('openstruct-mark');
   expect(iconPath(app)).toBe('/assets/armadurastruct-hephaestus.webp');
+});
+
+it('recebe o GeoSPT sem oferecer um pacote antes da publicação assinada', () => {
+  const s = snapshot();
+  const app = s.catalog.apps.find((item) => item.id === 'geosptstruct')!;
+  expect(app.repository).toBe('https://github.com/itanervale/GEOSPT-STRUCT');
+  expect(iconPath(app)).toBe('/assets/openstruct-mark.svg');
+  expect(appStatus(app, s)).toBe('unpublished');
+  expect(compatibleReleases(app, s)).toEqual([]);
 });
