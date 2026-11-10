@@ -2,5 +2,5 @@
   "schemaVersion": 1,
   "tag": "v2.0.7",
   "commit": "5f5cded75e94dbce2bea90eb685deef74d1dfd1f",
-  "publish": false
+  "publish": true
 }
