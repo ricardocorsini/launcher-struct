@@ -109,14 +109,14 @@ jobs:
     if: needs.request.outputs.publish == 'true'
     permissions:
       contents: write
-    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@14ad779bec9060e8169ce4d4f511f1124645661c
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@11d101ece964497b2b2adaf448ebe35aa1ef4464
     with:
       product-id: geosptstruct
       tag: ${{ needs.request.outputs.tag }}
       source-repository: itanervale/GEOSPT-STRUCT
       source-commit: ${{ needs.request.outputs.commit }}
       distribution-repo: ricardocorsini/openstruct-catalog
-      tooling-ref: 14ad779bec9060e8169ce4d4f511f1124645661c
+      tooling-ref: 11d101ece964497b2b2adaf448ebe35aa1ef4464
     secrets:
       package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
       distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}
