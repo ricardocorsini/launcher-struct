@@ -28,6 +28,7 @@ O launcher respeita `XDG_DATA_HOME`; no padrão Linux, utiliza:
 - `~/.local/share/applications/molasstruct.desktop`: entrada do MolaStruct.
 - `~/.local/share/applications/consolostruct.desktop`: entrada do ConsoloStruct.
 - `~/.local/share/applications/armadurastruct.desktop`: entrada do ArmaduraStruct.
+- `~/.local/share/applications/geosptstruct.desktop`: entrada do GeoSPT.
 - `icon.png` dentro da pasta gerenciada de cada aplicativo: sua arte oficial.
 
 A criação do menu é feita na inicialização nativa do AppImage. Execuções de desenvolvimento e pacotes do sistema não criam uma entrada de AppImage para o launcher. Falhas na escrita dos atalhos aparecem nos avisos e não impedem sua abertura.
@@ -35,3 +36,5 @@ A criação do menu é feita na inicialização nativa do AppImage. Execuções 
 ## Identidade do GeoSPT
 
 O GeoSPT usa a arte de Atena e estaca cilíndrica, fornecida na identidade visual do app. O menu nativo cria `geosptstruct.desktop`, com `StartupWMClass=geosptstruct` e PNG próprio de 256 pixels. Ao iniciar esta versão do Launcher, atalhos gerenciados anteriores são migrados sem alterar o AppImage instalado; atalhos externos são preservados. A arte da biblioteca é resolvida pelo ID `geosptstruct`, mantendo `openstruct-mark` no esquema do catálogo para compatibilidade com versões anteriores.
+
+Launchers 0.2.0 a 0.2.4 também recebem o GeoSPT do catálogo, mas mostram o símbolo genérico e criam `openstruct-geosptstruct.desktop` com o símbolo OpenStruct; a correção é atualizar o Launcher. O ícone do executável e da janela vem do pacote do próprio GeoSPT, mantido em `itanervale/GEOSPT-STRUCT`. Veja [Imagem antiga do GeoSPT](TROUBLESHOOTING.md#imagem-antiga-do-geospt).
