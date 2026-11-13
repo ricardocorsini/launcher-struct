@@ -91,6 +91,31 @@ fn each_known_product_has_distinct_artwork_and_unowned_shortcuts_are_preserved()
     );
 }
 
+fn png_size(bytes: &[u8]) -> (u32, u32) {
+    assert_eq!(&bytes[..8], b"\x89PNG\r\n\x1a\n");
+    assert_eq!(&bytes[12..16], b"IHDR");
+    let read = |at: usize| u32::from_be_bytes(bytes[at..at + 4].try_into().unwrap());
+    (read(16), read(20))
+}
+
+#[test]
+fn embedded_shortcut_artwork_is_a_real_256_pixel_png_per_product() {
+    let products = [
+        "molastruct",
+        "consolostruct",
+        "armadurastruct",
+        "geosptstruct",
+    ];
+    for id in products {
+        let artwork = identity(id).2;
+        assert_eq!(png_size(artwork), (256, 256), "{id}");
+        assert_ne!(artwork, LAUNCHER_ICON, "{id}");
+        for other in products.iter().filter(|other| **other != id) {
+            assert_ne!(artwork, identity(other).2, "{id} = {other}");
+        }
+    }
+}
+
 #[test]
 fn geospt_migrates_its_managed_shortcut_with_native_identity_and_own_artwork() {
     let temp = TempDir::new().unwrap();
@@ -107,15 +132,24 @@ fn geospt_migrates_its_managed_shortcut_with_native_identity_and_own_artwork() {
         ),
     )
     .unwrap();
+    // Launcher 0.2.4 and earlier wrote the generic launcher artwork for GeoSPT.
+    let icon = Path::new(&item.root).join("geosptstruct/icon.png");
+    fs::write(&icon, LAUNCHER_ICON).unwrap();
+    let external = data.join("applications/geospt-user.desktop");
+    let external_text = "[Desktop Entry]\nName=GeoSPT do usuário\nIcon=/opt/geospt/old.png\n";
+    fs::write(&external, external_text).unwrap();
     let executable_hash = digest(Path::new(&item.executable)).unwrap();
     let desktop = write_app_shortcut(&data, &item).unwrap();
     assert_eq!(desktop.file_name().unwrap(), "geosptstruct.desktop");
+    assert_eq!(fs::read_to_string(&external).unwrap(), external_text);
     let text = fs::read_to_string(&desktop).unwrap();
     assert!(text.contains("Name=GeoSPT\n"));
     assert!(text.contains("StartupWMClass=geosptstruct\n"));
+    assert!(text.contains(&format!("\nIcon={}\n", value(icon.to_str().unwrap()))));
     assert!(!legacy.exists());
-    let png = fs::read(Path::new(&item.root).join("geosptstruct/icon.png")).unwrap();
+    let png = fs::read(&icon).unwrap();
     assert_eq!(png, identity("geosptstruct").2);
+    assert_eq!(png_size(&png), (256, 256));
     for other in ["launcher", "consolostruct", "molastruct", "armadurastruct"] {
         assert_ne!(png, identity(other).2);
     }
@@ -127,6 +161,7 @@ fn geospt_migrates_its_managed_shortcut_with_native_identity_and_own_artwork() {
     assert_eq!(write_app_shortcut(&data, &item).unwrap(), desktop);
     remove_app_shortcut(&data, &item).unwrap();
     assert!(!desktop.exists());
+    assert_eq!(fs::read_to_string(&external).unwrap(), external_text);
 }
 
 #[test]
