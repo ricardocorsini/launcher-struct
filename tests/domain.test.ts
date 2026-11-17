@@ -118,6 +118,7 @@ describe('catálogo e progresso', () => {
       'armadurastruct',
       'consolostruct',
       'geosptstruct',
+      'geostruct',
     ]);
     expect(filterApps(s, 'all', '', 'Fundações', 'az').map((app) => app.id)).toEqual([
       'geosptstruct',
@@ -147,6 +148,14 @@ it('recebe o GeoSPT sem oferecer um pacote antes da publicação assinada', () =
   expect(app.repository).toBe('https://github.com/itanervale/GEOSPT-STRUCT');
   expect(app.icon).toBe('openstruct-mark');
   expect(iconPath(app)).toBe('/assets/geosptstruct-athena.webp');
+  expect(appStatus(app, s)).toBe('unpublished');
+  expect(compatibleReleases(app, s)).toEqual([]);
+});
+
+it('GeoStruct anuncia modelagem e aguarda pacotes assinados', () => {
+  const s = snapshot();
+  const app = s.catalog.apps.find((item) => item.id === 'geostruct')!;
+  expect(app.notice).toContain('não calcula FS');
   expect(appStatus(app, s)).toBe('unpublished');
   expect(compatibleReleases(app, s)).toEqual([]);
 });

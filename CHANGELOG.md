@@ -59,3 +59,9 @@ A configuração de produção foi ativada pelo mantenedor. O código guarda som
 - Testes do núcleo, assinatura entre linguagens, domínio e navegação; CI e workflow de compilação desktop.
 
 Esta versão não publica os instaladores dos produtos nem configura os endpoints de distribuição.
+
+## Integração GeoStruct
+
+- Catálogo editorial e publicação central assinada do GeoStruct 0.1.0 para Windows/Linux.
+- Identidade e commit de origem conferidos antes de compilar; publicação depende dos dois pacotes e dos testes de inicialização.
+- Modelo sem cálculo de FS; ícone OpenStruct provisório no catálogo.

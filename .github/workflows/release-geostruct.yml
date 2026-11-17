@@ -1,0 +1,128 @@
+name: Build or publish GeoStruct
+on:
+  push:
+    branches: [master]
+    paths: [.github/geostruct-release-request.json]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Versão, por exemplo v0.1.0'
+        type: string
+        required: true
+      commit:
+        description: 'SHA completo do código GeoStruct'
+        type: string
+        required: true
+      publish:
+        description: 'Publicar pacotes assinados; exige a tag preparada no repositório original'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: geostruct-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  request:
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.request.outputs.tag }}
+      commit: ${{ steps.request.outputs.commit }}
+      publish: ${{ steps.request.outputs.publish }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - run: node --test scripts/distribution/geostruct-request.test.mjs
+      - id: request
+        run: node scripts/geostruct-release-request.mjs
+        env:
+          RELEASE_INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_INPUT_COMMIT: ${{ inputs.commit }}
+          RELEASE_INPUT_PUBLISH: ${{ inputs.publish }}
+  preview:
+    needs: request
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            bundles: deb,appimage
+            platform: linux-x64
+          - os: windows-latest
+            bundles: nsis
+            platform: windows-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ricardocorsini/geo-struct
+          ref: ${{ needs.request.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: .launcher-tools
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify source version and application identity
+        run: node .launcher-tools/scripts/geostruct-release-request.mjs --verify-source
+        env:
+          RELEASE_INPUT_TAG: ${{ needs.request.outputs.tag }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Linux prerequisites
+        if: runner.os == 'Linux'
+        timeout-minutes: 10
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf xvfb xdotool
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+      - run: npm ci
+      - run: npm run check
+      - run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+      - run: npm run desktop:build -- --bundles ${{ matrix.bundles }} -- --locked
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+      - name: Native startup Linux
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python3 scripts/startup-smoke.py src-tauri/target/release/geostruct
+        env:
+          WEBKIT_DISABLE_DMABUF_RENDERER: '1'
+      - name: Native startup Windows
+        if: runner.os == 'Windows'
+        run: python scripts/startup-smoke.py src-tauri/target/release/geostruct.exe
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: GeoStruct-${{ needs.request.outputs.tag }}-${{ needs.request.outputs.commit }}-${{ matrix.platform }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/nsis/*.exe
+  release:
+    needs: [request, preview]
+    if: needs.request.outputs.publish == 'true'
+    permissions:
+      contents: write
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@4456cd75db26a9dc4d4a62ef14b215908ee47eaf
+    with:
+      product-id: geostruct
+      tag: ${{ needs.request.outputs.tag }}
+      source-repository: ricardocorsini/geo-struct
+      source-commit: ${{ needs.request.outputs.commit }}
+      distribution-repo: ricardocorsini/openstruct-catalog
+      tooling-ref: 4456cd75db26a9dc4d4a62ef14b215908ee47eaf
+    secrets:
+      package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
+      distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}
