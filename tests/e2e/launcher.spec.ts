@@ -129,3 +129,66 @@ test('GeoSPT usa a arte oficial em Fundações e mantém o fallback sem pacotes'
   ).toBeVisible();
   await expect(dialog.getByRole('button', { name: 'Instalar', exact: true })).toHaveCount(0);
 });
+
+test('GeoSPT carrega a mesma arte local no card, na lista e no detalhe, nos dois temas', async ({
+  page,
+}) => {
+  const external: string[] = [];
+  await page.route(
+    (url) => url.origin !== 'http://127.0.0.1:1420',
+    (route) => {
+      external.push(route.request().url());
+      return route.abort();
+    },
+  );
+  const art = async (icon: ReturnType<typeof page.locator>) => {
+    await expect(icon).toBeVisible();
+    const image = icon.locator('img');
+    await expect(image).toHaveAttribute('src', '/assets/geosptstruct-athena.webp');
+    await expect
+      .poll(() =>
+        image.evaluate((img: HTMLImageElement) => [
+          img.complete,
+          img.naturalWidth,
+          img.naturalHeight,
+        ]),
+      )
+      .toEqual([true, 768, 768]);
+    // Arte quadrada em caixa quadrada: sem deformação nem corte.
+    const box = (await icon.boundingBox())!;
+    const shown = (await image.boundingBox())!;
+    expect(box.width).toBeGreaterThanOrEqual(40);
+    expect(Math.abs(box.width - box.height)).toBeLessThan(1);
+    expect(Math.abs(shown.width - box.width)).toBeLessThan(1);
+    expect(Math.abs(shown.height - box.height)).toBeLessThan(1);
+    return box.width;
+  };
+  for (const [theme, value] of [
+    ['Claro', 'light'],
+    ['Escuro', 'dark'],
+  ]) {
+    await page.setViewportSize({ width: 1320, height: 1000 });
+    await page.getByRole('button', { name: 'Configurações', exact: true }).click();
+    await page.getByRole('button', { name: theme, exact: true }).click();
+    await page.getByRole('button', { name: 'Salvar configurações' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', value);
+    await page.getByRole('button', { name: 'Todos os aplicativos', exact: false }).first().click();
+    // Janela mínima do Tauri (880 × 650).
+    await page.setViewportSize({ width: 880, height: 650 });
+    await page
+      .getByRole('textbox', { name: 'Buscar aplicativos por nome ou descrição' })
+      .fill('GeoSPT');
+    await page.getByRole('button', { name: 'Visualização em grade' }).click();
+    const card = await art(page.locator('.product-card .product-icon'));
+    await page.getByRole('button', { name: 'Visualização em lista' }).click();
+    await expect(page.locator('.list-layout')).toBeVisible();
+    await art(page.locator('.product-card .product-icon'));
+    await page.getByRole('button', { name: 'GeoSPT', exact: true }).click();
+    const dialog = page.getByRole('dialog', { name: 'GeoSPT' });
+    expect(await art(dialog.locator('.product-icon.large'))).toBeGreaterThan(card);
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(external).toEqual([]);
+});
