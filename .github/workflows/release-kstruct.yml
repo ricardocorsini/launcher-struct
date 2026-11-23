@@ -1,0 +1,53 @@
+name: Publish KStruct
+
+on:
+  push:
+    branches: [master]
+    paths: [.github/kstruct-release-request.json]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag preparada no KStruct
+        type: string
+        required: true
+      commit:
+        description: SHA completo correspondente à tag
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  request:
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.request.outputs.tag }}
+      commit: ${{ steps.request.outputs.commit }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '22'
+      - id: request
+        run: node scripts/kstruct-release-request.mjs
+        env:
+          RELEASE_INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_INPUT_COMMIT: ${{ inputs.commit }}
+  release:
+    needs: request
+    permissions:
+      contents: write
+    uses: ricardocorsini/openstruct-catalog/.github/workflows/release-product.yml@8565b4bf1f41042d2b74815bbd93aa7d20cf37eb
+    with:
+      product-id: kstruct
+      tag: ${{ needs.request.outputs.tag }}
+      source-repository: ricardocorsini/k-struct
+      source-commit: ${{ needs.request.outputs.commit }}
+      distribution-repo: ricardocorsini/openstruct-catalog
+      tooling-ref: 8565b4bf1f41042d2b74815bbd93aa7d20cf37eb
+    secrets:
+      package-signing-key: ${{ secrets.OPENSTRUCT_PACKAGE_KEY }}
+      distribution-token: ${{ secrets.OPENSTRUCT_DISTRIBUTION_TOKEN }}
